@@ -2,6 +2,7 @@ package com.example.wbhealth.repository;
 
 import com.example.wbhealth.model.Medico;
 import com.example.wbhealth.model.exceptions.BancoDeDadosException;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -9,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class MedicoRepository implements Repositorio<Integer, Medico> {
 
 
@@ -95,9 +97,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public List<Medico> listarTodos() throws BancoDeDadosException {
-        List<Medico> medicos = new ArrayList<>();
-        Connection con = null;
+    public ArrayList<Medico> listarTodos() throws BancoDeDadosException {
+        ArrayList<Medico> medicos = new ArrayList<>();
+        Connection con= null ;
         try {
             con = ConexaoBancoDeDados.getConnection();
             Statement st = con.createStatement();
