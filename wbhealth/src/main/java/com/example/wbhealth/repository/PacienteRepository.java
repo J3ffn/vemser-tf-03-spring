@@ -1,8 +1,9 @@
 package com.example.wbhealth.repository;
 
-import model.Paciente;
-import model.exceptions.BancoDeDadosException;
-import util.CoresMenu;
+
+
+import com.example.wbhealth.model.Paciente;
+import com.example.wbhealth.model.exceptions.BancoDeDadosException;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ import java.util.List;
 public class PacienteRepository implements Repositorio<Integer, Paciente> {
 
     @Override
-    public void cadastrar(Paciente paciente) throws BancoDeDadosException{
+    public void cadastrar(Paciente paciente) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();

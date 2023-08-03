@@ -1,8 +1,9 @@
 package com.example.wbhealth.repository;
 
-import model.Atendimento;
-import model.exceptions.BancoDeDadosException;
-import util.CoresMenu;
+
+
+import com.example.wbhealth.model.Atendimento;
+import com.example.wbhealth.model.exceptions.BancoDeDadosException;
 
 import java.sql.*;
 import java.time.LocalDate;

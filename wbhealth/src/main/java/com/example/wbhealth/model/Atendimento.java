@@ -1,6 +1,5 @@
 package com.example.wbhealth.model;
-
-import util.TipoDeAtendimento;
+import com.example.wbhealth.util.TipoDeAtendimento;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

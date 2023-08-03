@@ -1,14 +1,18 @@
 package com.example.wbhealth.service;
 
-import model.Paciente;
-import model.exceptions.BancoDeDadosException;
-import repository.PacienteRepository;
-import util.CoresMenu;
+
+import com.example.wbhealth.model.Paciente;
+import com.example.wbhealth.model.exceptions.BancoDeDadosException;
+import com.example.wbhealth.repository.PacienteRepository;
 
 import java.util.List;
 
 public class PacienteService {
-    private final PacienteRepository pacienteRepository = new PacienteRepository();
+    private final PacienteRepository pacienteRepository;
+
+    public PacienteService(PacienteRepository pacienteRepository){
+        this.pacienteRepository=pacienteRepository;
+    }
 
     public void inserir(Paciente paciente) {
         try {
@@ -24,7 +28,7 @@ public class PacienteService {
             }
             paciente.setCep(cep);
             pacienteRepository.cadastrar(paciente);
-            System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
+//            System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
 
         }catch (BancoDeDadosException e){
             e.printStackTrace();
@@ -55,7 +59,7 @@ public class PacienteService {
         try {
             boolean consegueEditar = pacienteRepository.alterarPeloId(id, pacienteAtualizado);
             if (consegueEditar){
-                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
+//                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
             }
         }catch (BancoDeDadosException e) {
             e.printStackTrace();
@@ -67,7 +71,7 @@ public class PacienteService {
         try {
            boolean removeu =  pacienteRepository.deletarPeloId(id);
            if (removeu){
-               System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
+//               System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
            }
 
         } catch (BancoDeDadosException e) {

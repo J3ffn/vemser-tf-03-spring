@@ -1,6 +1,8 @@
 package com.example.wbhealth.repository;
 
-import model.exceptions.BancoDeDadosException;
+
+
+import com.example.wbhealth.model.exceptions.BancoDeDadosException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
