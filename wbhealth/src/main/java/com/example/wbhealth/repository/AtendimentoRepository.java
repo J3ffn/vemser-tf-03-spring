@@ -4,6 +4,7 @@ package com.example.wbhealth.repository;
 
 import com.example.wbhealth.model.Atendimento;
 import com.example.wbhealth.model.exceptions.BancoDeDadosException;
+import com.example.wbhealth.util.TipoDeAtendimento;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -80,7 +81,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
                 Integer idMedico = res.getInt("id_medico");
                 LocalDate dataAtendimento =   res.getDate("data_atendimento").toLocalDate();
                 String laudo = res.getString("laudo");
-                Integer tipoDeAtendimento = res.getInt("tipo_de_atendimento");
+                TipoDeAtendimento tipoDeAtendimento = TipoDeAtendimento.valueOf(res.getInt("tipo_de_atendimento"));
                 Double valorAtendimento = res.getDouble("valor_atendimento");
 
                 String dataFormatada = dataAtendimento.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
@@ -126,7 +127,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
                 Integer idMedico = res.getInt("id_medico");
                 LocalDate dataAtendimento =   res.getDate("data_atendimento").toLocalDate();
                 String laudo = res.getString("laudo");
-                Integer tipoDeAtendimento = res.getInt("tipo_de_atendimento");
+                TipoDeAtendimento tipoDeAtendimento = TipoDeAtendimento.valueOf(res.getInt("tipo_de_atendimento"));
                 Double valorAtendimento = res.getDouble("valor_atendimento");
 
                 String dataFormatada = dataAtendimento.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
