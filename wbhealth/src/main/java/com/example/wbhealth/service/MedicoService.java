@@ -1,15 +1,20 @@
 package com.example.wbhealth.service;
 
-import model.Medico;
-import model.exceptions.BancoDeDadosException;
-import repository.MedicoRepository;
-import util.CoresMenu;
+
+import com.example.wbhealth.model.Medico;
+import com.example.wbhealth.model.exceptions.BancoDeDadosException;
+import com.example.wbhealth.repository.MedicoRepository;
+import com.example.wbhealth.util.CoresMenu;
 
 import java.util.List;
 
 public class MedicoService {
 
-    private final MedicoRepository medicoRepository = new MedicoRepository();
+    private final MedicoRepository medicoRepository;
+
+    public MedicoService(MedicoRepository medicoRepository) {
+        this.medicoRepository=medicoRepository;
+    }
 
     public boolean buscarCpf(Medico medico) {
         return medicoRepository.buscarCpf(medico);

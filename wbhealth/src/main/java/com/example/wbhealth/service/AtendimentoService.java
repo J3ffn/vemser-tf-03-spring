@@ -1,17 +1,20 @@
 package com.example.wbhealth.service;
 
-import model.Atendimento;
-import model.exceptions.BancoDeDadosException;
-import repository.AtendimentoRepository;
-import util.CoresMenu;
+
+import com.example.wbhealth.model.Atendimento;
+import com.example.wbhealth.model.exceptions.BancoDeDadosException;
+import com.example.wbhealth.repository.AtendimentoRepository;
 
 import java.util.List;
 
-
 public class AtendimentoService {
-    private final AtendimentoRepository atendimentoRepository = new AtendimentoRepository();
+    private final AtendimentoRepository atendimentoRepository;
 
-    public void inserir( Atendimento atendimento) throws BancoDeDadosException {
+    public AtendimentoService(AtendimentoRepository atendimentoRepository) {
+        this.atendimentoRepository = atendimentoRepository;
+    }
+
+    public void inserir(Atendimento atendimento) throws BancoDeDadosException {
         atendimentoRepository.cadastrar(atendimento);
     }
 
@@ -33,7 +36,7 @@ public class AtendimentoService {
         try {
             boolean consegueEditar = atendimentoRepository.alterarPeloId(id, atendimentoAtualizado);
             if (consegueEditar){
-                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
+//                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
             }
         }catch (BancoDeDadosException e) {
             e.printStackTrace();
@@ -44,7 +47,7 @@ public class AtendimentoService {
         try {
             boolean removeu =  atendimentoRepository.deletarPeloId(id);
             if (removeu){
-                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
+//                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
             }
 
         } catch (BancoDeDadosException e) {
