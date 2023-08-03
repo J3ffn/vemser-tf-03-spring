@@ -1,6 +1,7 @@
 package com.example.wbhealth.model;
 
-import util.TipoDeAtendimento;
+
+import com.example.wbhealth.util.TipoDeAtendimento;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,21 +19,20 @@ public class Atendimento {
     private Double valorDoAtendimento;
 
 
-    public Atendimento(){
-    }
+    public Atendimento() {}
 
-    public Atendimento(Integer idHospital, Integer idPaciente, Integer idMedico, String dataAtendimento, String laudo, Integer tipoDeAtendimento) {
+    public Atendimento(Integer idHospital, Integer idPaciente, Integer idMedico, String dataAtendimento, String laudo, TipoDeAtendimento tipoDeAtendimento) {
         this.idHospital = idHospital;
         this.idPaciente = idPaciente;
         this.idMedico = idMedico;
         this.dataAtendimento = LocalDate.parse(dataAtendimento, fmt);
         this.laudo = laudo;
         setTipoDeAtendimento(tipoDeAtendimento);
-        setValorDoAtendimento(tipoDeAtendimento);
+        setValorDoAtendimento(calcularValorDoAtendimento(tipoDeAtendimento));
     }
 
-    public Double calcularValorDoAtendimento(Integer tipoDeAtendimento) {
-        return switch (tipoDeAtendimento) {
+    public Double calcularValorDoAtendimento(TipoDeAtendimento tipoDeAtendimento) {
+        return switch (tipoDeAtendimento.getCodigo()) {
             case 1 -> 200.0;
             case 2 -> 3000.0;
             case 3 -> 180.0;
@@ -48,8 +48,8 @@ public class Atendimento {
         return valorDoAtendimento;
     }
 
-    public void setValorDoAtendimento(Integer valorAtendimento) {
-        valorDoAtendimento = calcularValorDoAtendimento(valorAtendimento);
+    public void setValorDoAtendimento(Double valorAtendimento) {
+        valorDoAtendimento = valorAtendimento;
     }
 
     public TipoDeAtendimento getTipoDeAtendimento(){

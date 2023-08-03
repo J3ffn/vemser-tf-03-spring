@@ -5,8 +5,7 @@ public class Funcionario extends Pessoa implements Pagamento{
     private Integer idHospital;
     private Integer idPessoa;
 
-    public Funcionario() {
-    }
+    public Funcionario() {}
 
     public Funcionario(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, Integer idHospital) {
         super(nome, cep, dataNascimento, cpf, salarioMensal);
@@ -14,7 +13,6 @@ public class Funcionario extends Pessoa implements Pagamento{
     }
 
     // Getters & Setters
-
 
     public Integer getIdFuncionario() {
         return idFuncionario;
