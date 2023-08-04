@@ -1,8 +1,8 @@
-package com.example.wbhealth.controller;
+package br.com.dbc.wbhealth.controller;
 
-import com.example.wbhealth.model.Hospital;
-import com.example.wbhealth.model.exceptions.BancoDeDadosException;
-import com.example.wbhealth.service.HospitalService;
+import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.model.entity.Hospital;
+import br.com.dbc.wbhealth.service.HospitalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +29,7 @@ public class HospitalController {
     }
 
     @GetMapping("/listar-pelo-id/{idHospital}")
-    public Hospital listarPeloID( @Positive @PathVariable Integer id) throws BancoDeDadosException { /////
+    public Hospital listarPeloID(@Positive @PathVariable Integer id) throws BancoDeDadosException { /////
         return hospitalService.listarPeloId(id);
     }
 
