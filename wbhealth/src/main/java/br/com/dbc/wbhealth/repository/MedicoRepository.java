@@ -37,8 +37,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
 //    }
 
     @Override
-    public void cadastrar(Medico medico) throws BancoDeDadosException {
+    public Medico save(Medico medico) throws BancoDeDadosException {
         Connection con = null;
+        Medico medicoAtualizado= new Medico();
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -77,7 +78,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             stMedico.setString(4, medico.getCrm());
 
             int res = stMedico.executeUpdate();
-
+            medicoAtualizado = findById(proximoMedicoId);
 
         }catch (BancoDeDadosException e) {
             System.err.println("Erro ao acessar o banco de dados:");
@@ -94,10 +95,11 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 e.printStackTrace();
             }
         }
+        return medicoAtualizado;
     }
 
     @Override
-    public ArrayList<Medico> listarTodos() throws BancoDeDadosException {
+    public ArrayList<Medico> findAll() throws BancoDeDadosException {
         ArrayList<Medico> medicos = new ArrayList<>();
         Connection con= null ;
         try {
@@ -146,7 +148,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public Medico listarPeloId(Integer id) throws BancoDeDadosException {
+    public Medico findById(Integer id) throws BancoDeDadosException {
         Medico medico = new Medico();
         Connection con = null;
         try {
@@ -192,11 +194,11 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public boolean alterarPeloId(Integer id, Medico medico) throws BancoDeDadosException {
+    public Medico update(Integer id, Medico medico) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            Medico medicoId = this.listarPeloId(id);
+            Medico medicoId = this.findById(id);
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE PESSOA SET \n");
             List<String> camposAtualizados = new ArrayList<>();
@@ -260,10 +262,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
 
                 int res2 = statement.executeUpdate();
 
-                return res2 > 0;
+                return findById(id);
             } else {
-                System.err.println("Nenhum campo para atualizar.");
-                return false;
+                throw new RuntimeException("Nenhum campo para atualizar.");
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -280,12 +281,12 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public boolean deletarPeloId(Integer id) throws BancoDeDadosException {
+    public boolean deleteById(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            Medico medico = listarPeloId(id);
+            Medico medico = findById(id);
 
             String sql = "DELETE FROM MEDICO WHERE ID_MEDICO = ?";
 

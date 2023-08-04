@@ -17,7 +17,7 @@ public class MedicoController {
     }
 
     @GetMapping
-    public ArrayList<Medico> list () {
+    public ArrayList<Medico> findAll () {
             ArrayList<Medico> medicos = new ArrayList<>();
             try {
                 medicos= medicoService.listarTodos();
@@ -31,7 +31,7 @@ public class MedicoController {
         }
 
     @GetMapping("{id}")
-    public Medico buscarId(@PathVariable int id){
+    public Medico findById(@PathVariable int id){
         Medico medico = new Medico();
         try {
             return medicoService.buscarId(id);
@@ -44,12 +44,12 @@ public class MedicoController {
     }
 
     @PostMapping()
-    public Medico inserir(@RequestBody Medico medico){
+    public Medico save(@RequestBody Medico medico){
         return medicoService.inserir(medico);
     }
 
     @PutMapping("{id}")
-    public Medico alterarPeloId(@PathVariable int id, @RequestBody Medico medico){
+    public Medico update(@PathVariable int id, @RequestBody Medico medico){
         Medico medicoAtualizado = new Medico();
         try {
             return medicoService.alterarPeloId(id, medico);
@@ -62,7 +62,7 @@ public class MedicoController {
     }
 
     @DeleteMapping("{id}")
-    public String deletarPeloId(@PathVariable int id){
+    public String deleteById(@PathVariable int id){
         return medicoService.deletarPeloId(id);
     }
 }
