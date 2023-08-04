@@ -10,7 +10,7 @@ import java.util.List;
 public interface Repositorio<Key, T> {
     public T save(T entidade) throws BancoDeDadosException;
 
-    public List<T> findALL() throws BancoDeDadosException;
+    public List<T> findAll() throws BancoDeDadosException;
 
     public T findById(Key id) throws BancoDeDadosException;
 
