@@ -2,6 +2,7 @@ package com.example.wbhealth.repository;
 
 
 
+import com.example.wbhealth.model.Hospital;
 import com.example.wbhealth.model.exceptions.BancoDeDadosException;
 
 import java.sql.Connection;
