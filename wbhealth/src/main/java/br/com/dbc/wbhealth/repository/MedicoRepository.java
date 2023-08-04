@@ -31,10 +31,10 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
         }
     }
 
-    @Override
-    public Medico buscarId(Integer id) throws BancoDeDadosException {
-        return this.listarPeloId(id);
-    }
+//    @Override
+//    public Medico buscarId(Integer id) throws BancoDeDadosException {
+//        return this.listarPeloId(id);
+//    }
 
     @Override
     public void cadastrar(Medico medico) throws BancoDeDadosException {
