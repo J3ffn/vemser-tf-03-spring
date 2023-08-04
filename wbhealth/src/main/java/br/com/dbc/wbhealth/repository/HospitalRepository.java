@@ -28,12 +28,7 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
     }
 
     @Override
-    public Hospital buscarId(Integer id) throws BancoDeDadosException { ////Excluir
-        return null;
-    }
-
-    @Override
-    public List<Hospital> listarTodos() throws BancoDeDadosException {
+    public List<Hospital> findAll() throws BancoDeDadosException {
         List<Hospital> hospitais = new ArrayList<>();
         Connection con = null;
 
@@ -66,7 +61,7 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
     }
 
     @Override
-    public Hospital listarPeloId(Integer id) throws BancoDeDadosException {
+    public Hospital findById(Integer id) throws BancoDeDadosException {
         Hospital hospital = new Hospital();
         Connection con = null;
         try {
@@ -95,7 +90,7 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
     }
 
     @Override
-    public void cadastrar(Hospital hospital){ ////Deve retornar hospital
+    public Hospital save(Hospital hospital) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -114,7 +109,7 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
 
             int hospitaisInseridos = stHospital.executeUpdate();
             if (hospitaisInseridos == 0) throw new SQLException("Ocorreu um erro ao inserir!");
-//            return hospital;
+            return hospital;
         } catch (BancoDeDadosException e) {
             System.err.println("Erro ao acessar o banco de dados:");
             e.printStackTrace();
@@ -128,17 +123,19 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new BancoDeDadosException(e.getCause());
             }
         }
+        return hospital;
     }
 
     @Override
-    public boolean alterarPeloId(Integer id, Hospital hospital) throws BancoDeDadosException {
+    public Hospital update(Integer id, Hospital hospital) throws BancoDeDadosException {
 
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            Hospital hospital1Id = this.listarPeloId(id);
+            Hospital hospital1Id = this.findById(id);
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE HOSPITAL SET nome = ?\n");
             sql.append("WHERE HOSPITAL.id_hospital = ?");
@@ -149,7 +146,8 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
             st.setInt(2, id);
 
             int res = st.executeUpdate();
-            return res > 0;
+
+            return hospital;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -165,7 +163,7 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
     }
 
     @Override
-    public boolean deletarPeloId(Integer id) throws BancoDeDadosException {
+    public boolean deleteById(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
@@ -188,15 +186,8 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new BancoDeDadosException(e.getCause());
             }
         }
-    }
-
-
-    private Hospital getHospitalFromResultSet(ResultSet res) throws SQLException {
-        Hospital hospital = new Hospital();
-        hospital.setIdHospital(res.getInt("id_hospital"));
-        hospital.setNome(res.getString("nome"));
-        return hospital;
     }
 }

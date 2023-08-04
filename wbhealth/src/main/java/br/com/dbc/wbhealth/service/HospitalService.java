@@ -16,20 +16,20 @@ public class HospitalService {
         this.hospitalRepository = hospitalRepository;
     }
 
-    public List<Hospital> listarTodos() throws BancoDeDadosException {
-        return hospitalRepository.listarTodos();
+    public List<Hospital> findAll() throws BancoDeDadosException {
+        return hospitalRepository.findAll();
     }
 
-    public Hospital listarPeloId(Integer id) throws BancoDeDadosException {
-        return hospitalRepository.listarPeloId(id);
+    public Hospital findById(Integer id) throws BancoDeDadosException {
+        return hospitalRepository.findById(id);
     }
 
-    public Hospital cadastrar(Hospital hospital) {
-            hospitalRepository.cadastrar(hospital);
+    public Hospital save(Hospital hospital) throws BancoDeDadosException {
+            hospitalRepository.save(hospital);
         return hospital;
     }
 
-    public Hospital alterarPeloId(Integer idHospital, Hospital hospital) {
+    public Hospital update(Integer idHospital, Hospital hospital) {
         Hospital hospitalEncontrado = null;
         try {
             hospitalEncontrado = find(idHospital);
@@ -42,10 +42,10 @@ public class HospitalService {
         return hospitalEncontrado;
     }
 
-    public void deletarPeloId(Integer id) {
+    public void deleteById(Integer id) {
         try{
             Hospital hospitalEncontrado = find(id);
-            hospitalRepository.deletarPeloId(hospitalEncontrado.getIdHospital());
+            hospitalRepository.deleteById(hospitalEncontrado.getIdHospital());
         }catch (BancoDeDadosException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class HospitalService {
     }
 
     private Hospital find(Integer id) throws Exception {
-        Hospital hospitalEncontrado = hospitalRepository.listarTodos().stream()
+        Hospital hospitalEncontrado = hospitalRepository.findAll().stream()
                 .filter(hospital -> hospital.getIdHospital().equals(id))
                 .findFirst()
                 .get();
