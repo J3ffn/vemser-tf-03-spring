@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework.boot:spring-boot-starter-validation:2.7.15-SNAPSHOT" type="java-imported" external-system-id="Maven">
+    <properties groupId="org.springframework.boot" artifactId="spring-boot-starter-validation" version="2.7.15-20230801.192407-22" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-validation/2.7.15-SNAPSHOT/spring-boot-starter-validation-2.7.15-20230801.192407-22.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-validation/2.7.15-SNAPSHOT/spring-boot-starter-validation-2.7.15-20230801.192407-22-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-starter-validation/2.7.15-SNAPSHOT/spring-boot-starter-validation-2.7.15-20230801.192407-22-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
