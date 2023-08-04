@@ -1,5 +1,7 @@
 package br.com.dbc.wbhealth.repository;
 
+
+
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.model.entity.Funcionario;
 

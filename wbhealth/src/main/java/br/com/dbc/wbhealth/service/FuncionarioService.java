@@ -7,7 +7,11 @@ import br.com.dbc.wbhealth.repository.FuncionarioRepository;
 import java.util.List;
 
 public class FuncionarioService {
-    private final FuncionarioRepository funcionarioRepository = new FuncionarioRepository();
+    private final FuncionarioRepository funcionarioRepository;
+
+    public FuncionarioService(FuncionarioRepository funcionarioRepository){
+        this.funcionarioRepository=funcionarioRepository;
+    }
 
     public void inserir(Funcionario funcionario) {
         try {
@@ -56,9 +60,9 @@ public class FuncionarioService {
     public void alterarPeloId(Integer id, Funcionario funcionarioAtualizado) throws BancoDeDadosException{
         try {
             boolean consegueEditar = funcionarioRepository.alterarPeloId(id, funcionarioAtualizado);
-//            if (consegueEditar){
+            if (consegueEditar){
 //                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
-//            }
+            }
         }catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
@@ -67,9 +71,9 @@ public class FuncionarioService {
     public void deletarPeloId(Integer id){
         try {
             boolean removeu =  funcionarioRepository.deletarPeloId(id);
-//            if (removeu){
+            if (removeu){
 //                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
-//            }
+            }
 
         } catch (BancoDeDadosException e) {
             e.printStackTrace();

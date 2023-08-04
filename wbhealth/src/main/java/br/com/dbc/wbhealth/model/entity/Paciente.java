@@ -3,10 +3,9 @@ package br.com.dbc.wbhealth.model.entity;
 import java.time.format.DateTimeFormatter;
 
 public class Paciente extends Pessoa {
-    private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private Integer idPaciente;
     private Integer idHospital;
-    private Integer idPessoa;
 
     public Paciente() {
     }
@@ -35,22 +34,12 @@ public class Paciente extends Pessoa {
     }
 
     @Override
-    public Integer getIdPessoa() {
-        return idPessoa;
-    }
-
-    @Override
-    public void setIdPessoa(Integer idPessoa) {
-        this.idPessoa = idPessoa;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Id: ").append(this.getIdPaciente());
         sb.append("\nPaciente: ").append(this.getNome());
         sb.append("\nCPF: ").append(this.getCpf());
-        sb.append("\nData Nascimento: ").append(this.getDataNascimento().format(fmt));
+        sb.append("\nData Nascimento: ").append(this.getDataNascimento().format(FORMAT));
         return sb.toString();
     }
 

@@ -1,6 +1,5 @@
 package br.com.dbc.wbhealth.model.entity;
 
-
 import br.com.dbc.wbhealth.model.Pagamento;
 
 public class Funcionario extends Pessoa implements Pagamento {

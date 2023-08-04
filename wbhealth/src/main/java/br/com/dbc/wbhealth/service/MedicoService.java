@@ -3,9 +3,12 @@ package br.com.dbc.wbhealth.service;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import br.com.dbc.wbhealth.repository.MedicoRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
 
+import java.util.ArrayList;
+
+@Service
 public class MedicoService {
 
     private final MedicoRepository medicoRepository;
@@ -21,7 +24,8 @@ public class MedicoService {
     public Medico buscarId(Integer id) throws BancoDeDadosException {
         return medicoRepository.buscarId(id);
     }
-    public void inserir(Medico medico) {
+    public Medico inserir(Medico medico) {
+        Medico novoMedico=new Medico();
         try {
             String cpf = medico.getCpf().replaceAll("[^0-9]", "");
             if (cpf.length() != 11) {
@@ -35,6 +39,8 @@ public class MedicoService {
             }
             medico.setCep(cep);
             medicoRepository.cadastrar(medico);
+            novoMedico= medico;
+
 //            System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
 
         } catch (BancoDeDadosException e) {
@@ -42,15 +48,11 @@ public class MedicoService {
         } catch (Exception e) {
             System.out.println("Unnexpected error: " + e.getMessage());
         }
+        return novoMedico;
     }
 
-    public void listarTodos() {
-        try {
-            List<Medico> list = medicoRepository.listarTodos();
-            list.forEach(System.out::println);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        }
+    public ArrayList<Medico> listarTodos() throws BancoDeDadosException {
+        return medicoRepository.listarTodos();
     }
 
     public void listarPeloId(Integer id) throws BancoDeDadosException {
@@ -58,26 +60,31 @@ public class MedicoService {
         System.out.println(medico);
     }
 
-    public void alterarPeloId(Integer id, Medico medicoAtualizado) throws BancoDeDadosException {
+    public Medico alterarPeloId(Integer id, Medico medicoAtualizado) throws BancoDeDadosException {
+        Medico medico = new Medico();
         try {
             boolean consegueEditar = medicoRepository.alterarPeloId(id, medicoAtualizado);
-//            if (consegueEditar) {
-//                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
-//            }
+            if (consegueEditar) {
+
+                medico = medicoRepository.listarPeloId(id);
+            }
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
+        return medico;
     }
-    public void deletarPeloId(Integer id) {
+    public String deletarPeloId(Integer id) {
+        String retorno = new String();
         try {
             boolean removeu = medicoRepository.deletarPeloId(id);
-//            if (removeu) {
-//                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
-//            }
+            if (removeu) {
+                retorno = "Medico deletado com sucesso.";
+            }
 
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
+        return retorno;
 
     }
 

@@ -1,6 +1,5 @@
 package br.com.dbc.wbhealth.service;
 
-
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.repository.AtendimentoRepository;
