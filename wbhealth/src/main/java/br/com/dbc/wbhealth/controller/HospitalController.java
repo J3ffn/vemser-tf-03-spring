@@ -29,7 +29,7 @@ public class HospitalController {
     }
 
     @GetMapping("/listar-pelo-id/{idHospital}")
-    public Hospital listarPeloID( @Positive @PathVariable Integer id) throws BancoDeDadosException { /////
+    public Hospital listarPeloID(@Positive @PathVariable Integer id) throws BancoDeDadosException { /////
         return hospitalService.listarPeloId(id);
     }
 
