@@ -17,29 +17,29 @@ public class PacienteController {
     }
 
     @GetMapping
-    public List<Paciente> list() throws BancoDeDadosException {
-        return pacienteService.listarTodos();
+    public List<Paciente> findAll() throws BancoDeDadosException {
+        return pacienteService.findAll();
     }
 
     @GetMapping("/")
-    public Paciente listById(@RequestParam("idPaciente") Integer idPaciente) throws BancoDeDadosException {
-        return pacienteService.listarPeloId(idPaciente);
+    public Paciente findById(@RequestParam("idPaciente") Integer idPaciente) throws BancoDeDadosException {
+        return pacienteService.findById(idPaciente);
     }
 
     @PostMapping
-    public Paciente create(@RequestBody Paciente paciente){
-        return pacienteService.inserir(paciente);
+    public Paciente save(@RequestBody Paciente paciente) throws BancoDeDadosException {
+        return pacienteService.save(paciente);
     }
 
     @PutMapping("/{idPaciente}")
     public Paciente update(@PathVariable Integer idPaciente, @RequestBody Paciente paciente)
             throws BancoDeDadosException {
-        return pacienteService.alterarPeloId(idPaciente, paciente);
+        return pacienteService.update(idPaciente, paciente);
     }
 
     @DeleteMapping("/{idPaciente}")
-    public void delete(@PathVariable Integer idPaciente){
-        pacienteService.deletarPeloId(idPaciente);
+    public void delete(@PathVariable Integer idPaciente) throws BancoDeDadosException {
+        pacienteService.deleteById(idPaciente);
     }
 
 }
