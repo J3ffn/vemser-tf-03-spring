@@ -1,9 +1,8 @@
 package com.example.wbhealth.repository;
 
-
-
 import com.example.wbhealth.model.Paciente;
 import com.example.wbhealth.model.exceptions.BancoDeDadosException;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -11,7 +10,71 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class PacienteRepository implements Repositorio<Integer, Paciente> {
+    @Override
+    public List<Paciente> listarTodos() throws BancoDeDadosException {
+        List<Paciente> pacientes = new ArrayList<>();
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            Statement st = con.createStatement();
+
+            String sql = "SELECT * FROM PESSOA\n" +
+                    "INNER JOIN PACIENTE\n" +
+                    "ON PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA";
+
+            ResultSet res = st.executeQuery(sql);
+
+            while (res.next()){
+                Paciente paciente = obterPaciente(res);
+                pacientes.add(paciente);
+            }
+
+        }catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return pacientes;
+    }
+
+    @Override
+    public Paciente listarPeloId(Integer id) throws BancoDeDadosException {
+        Paciente paciente = null;
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+            String sql = "SELECT * FROM PACIENTE\n" +
+                    "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
+
+            PreparedStatement st = con.prepareStatement(sql);
+            st.setInt(1, id);
+
+            ResultSet res = st.executeQuery();
+            if (res.next()){
+                paciente = obterPaciente(res);
+            }
+
+        }catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return paciente;
+    }
 
     @Override
     public void cadastrar(Paciente paciente) throws BancoDeDadosException {
@@ -35,7 +98,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             stPesssoa.setString(5, paciente.getCpf());
             stPesssoa.setDouble(6, paciente.getSalarioMensal());
 
-
             int pessoasInseridas = stPesssoa.executeUpdate();
 
             if (pessoasInseridas == 0) throw new SQLException("Ocorreu um erro ao inserir!");
@@ -54,12 +116,11 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
 
             int res = stPaciente.executeUpdate();
 
-
         }catch (BancoDeDadosException e) {
-            System.err.println("Erro ao acessar o banco de dados:");
+            System.err.println("Erro ao acessar o banco de dados: ");
             e.printStackTrace();
         } catch (Exception e) {
-            System.err.println("Erro inesperado:");
+            System.err.println("Erro inesperado: ");
             e.printStackTrace();
         } finally {
             try {
@@ -70,100 +131,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public List<Paciente> listarTodos() throws BancoDeDadosException {
-        List<Paciente> pacientes = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = ConexaoBancoDeDados.getConnection();
-            Statement st = con.createStatement();
-
-            String sql = "SELECT * FROM PESSOA\n" +
-                    "INNER JOIN PACIENTE\n" +
-                    "ON PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA";
-
-            ResultSet res = st.executeQuery(sql);
-
-            while (res.next()){
-                Integer idPessoa = res.getInt("id_pessoa");
-                String nome = res.getString("nome");
-                String cep = res.getString("cep");
-                LocalDate data =   res.getDate("data_nascimento").toLocalDate();
-                String cpf = res.getString("cpf");
-                Double salarioMensal = res.getDouble("salario_mensal");
-                Integer idPaciente = res.getInt("id_paciente");
-                Integer id_hospital = res.getInt("id_hospital");
-
-                String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-                Paciente paciente = new Paciente(nome,cep, dataFormatada, cpf, salarioMensal, id_hospital);
-
-                paciente.setIdPessoa(idPessoa);
-                paciente.setIdPaciente(idPaciente);
-
-                pacientes.add(paciente);
-            }
-
-        }catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return pacientes;
-    }
-
-    @Override
-    public Paciente listarPeloId(Integer id) throws BancoDeDadosException {
-        Paciente paciente = new Paciente();
-        Connection con = null;
-        try {
-            con = ConexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM PACIENTE\n" +
-                    "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
-
-            PreparedStatement st = con.prepareStatement(sql);
-            st.setInt(1, id);
-
-
-            ResultSet res = st.executeQuery();
-            if (res.next()){
-                Integer idPessoa = res.getInt("id_pessoa");
-                String nome = res.getString("nome");
-                String cep = res.getString("cep");
-                LocalDate data =   res.getDate("data_nascimento").toLocalDate();
-                String cpf = res.getString("cpf");
-                Double salarioMensal = res.getDouble("salario_mensal");
-                Integer idPaciente = res.getInt("id_paciente");
-                Integer id_hospital = res.getInt("id_hospital");
-
-                String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-                paciente = new Paciente(nome,cep, dataFormatada, cpf, salarioMensal, id_hospital);
-
-                paciente.setIdPessoa(idPessoa);
-                paciente.setIdPaciente(idPaciente);
-            }
-
-        }catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return paciente;
     }
 
     @Override
@@ -243,7 +210,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         }
     }
 
-
     @Override
     public boolean deletarPeloId(Integer id) throws BancoDeDadosException {
         Connection con = null;
@@ -281,9 +247,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                 e.printStackTrace();
             }
         }
-
-
-
     }
 
     @Override
@@ -302,8 +265,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             throw new BancoDeDadosException(e.getCause());
         }
     }
-
-
 
     public boolean buscarCpf(Paciente paciente){
         Connection con = null;
@@ -336,7 +297,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         }
 
         return retorno;
-
     }
 
     @Override
@@ -344,4 +304,23 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         return this.listarPeloId(id);
     }
 
+    private Paciente obterPaciente(ResultSet res) throws SQLException {
+        Integer idPessoa = res.getInt("id_pessoa");
+        String nome = res.getString("nome");
+        String cep = res.getString("cep");
+        LocalDate data = res.getDate("data_nascimento").toLocalDate();
+        String cpf = res.getString("cpf");
+        Double salarioMensal = res.getDouble("salario_mensal");
+        Integer idPaciente = res.getInt("id_paciente");
+        Integer id_hospital = res.getInt("id_hospital");
+
+        String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf, salarioMensal, id_hospital);
+
+        paciente.setIdPessoa(idPessoa);
+        paciente.setIdPaciente(idPaciente);
+
+        return paciente;
+    }
 }

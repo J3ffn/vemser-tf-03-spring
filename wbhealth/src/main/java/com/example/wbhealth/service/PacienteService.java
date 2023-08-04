@@ -1,20 +1,30 @@
 package com.example.wbhealth.service;
 
-
 import com.example.wbhealth.model.Paciente;
 import com.example.wbhealth.model.exceptions.BancoDeDadosException;
 import com.example.wbhealth.repository.PacienteRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PacienteService {
     private final PacienteRepository pacienteRepository;
 
     public PacienteService(PacienteRepository pacienteRepository){
-        this.pacienteRepository=pacienteRepository;
+        this.pacienteRepository = pacienteRepository;
     }
 
-    public void inserir(Paciente paciente) {
+    public List<Paciente> listarTodos() throws BancoDeDadosException {
+        return pacienteRepository.listarTodos();
+    }
+
+    public Paciente listarPeloId(Integer idPaciente) throws BancoDeDadosException {
+        return pacienteRepository.listarPeloId(idPaciente); // pode retornar null
+    }
+
+    public Paciente inserir(Paciente paciente) {
+        Paciente novoPaciente = null;
         try {
             String cpf = paciente.getCpf().replaceAll("[^0-9]", "");
             if (cpf.length() != 11) {
@@ -28,6 +38,7 @@ public class PacienteService {
             }
             paciente.setCep(cep);
             pacienteRepository.cadastrar(paciente);
+            novoPaciente = paciente;
 //            System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
 
         }catch (BancoDeDadosException e){
@@ -35,36 +46,24 @@ public class PacienteService {
         }catch (Exception e){
             System.out.println("Unnexpected error: " +  e.getMessage());
         }
+
+        return paciente;
     }
 
     public boolean buscarCpf(Paciente paciente){
         return pacienteRepository.buscarCpf(paciente);
     }
 
-    public void listarTodos() {
-        try {
-            List<Paciente> list = pacienteRepository.listarTodos();
-            list.forEach(System.out::println);
-        }catch (BancoDeDadosException e){
-            e.printStackTrace();
-        }
-    }
-
-    public void listarPeloId(Integer id) throws BancoDeDadosException {
-        Paciente paciente = pacienteRepository.listarPeloId(id);
-        System.out.println(paciente);
-    }
-
-    public void alterarPeloId(Integer id, Paciente pacienteAtualizado) throws BancoDeDadosException {
+    public Paciente alterarPeloId(Integer id, Paciente pacienteAtualizado) throws BancoDeDadosException {
         try {
             boolean consegueEditar = pacienteRepository.alterarPeloId(id, pacienteAtualizado);
             if (consegueEditar){
-//                System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
+                return pacienteAtualizado;
             }
         }catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
     public void deletarPeloId(Integer id){
