@@ -17,44 +17,41 @@ public class AtendimentoService {
         this.atendimentoRepository = atendimentoRepository;
     }
 
-    public Atendimento inserir(Atendimento atendimento) throws BancoDeDadosException {
-        atendimentoRepository.cadastrar(atendimento);
+    public Atendimento save(Atendimento atendimento) throws BancoDeDadosException {
+        atendimentoRepository.save(atendimento);
         return atendimento;
     }
 
-    public List<Atendimento> listarTodos() throws BancoDeDadosException {
-        return atendimentoRepository.listarTodos();
+    public List<Atendimento> findAll() throws BancoDeDadosException {
+        return atendimentoRepository.findAll();
     }
 
     public Atendimento getAtendimentoPeloId(Integer id) throws BancoDeDadosException {
-        return atendimentoRepository.listarPeloId(id);
+        return atendimentoRepository.findById(id);
     }
 
-    public List<Atendimento> getAtendimentoPeloIdUsuario(Integer idPaciente) throws BancoDeDadosException {
-        return listarTodos()
+    public List<Atendimento> findByIdPaciente(Integer idPaciente) throws BancoDeDadosException {
+        return findByIdPaciente(idPaciente)
                 .stream()
                 .filter(atendimento -> atendimento.getIdPaciente().equals(idPaciente))
                 .toList();
     }
 
-    public Atendimento alterarPeloId(Integer id, Atendimento atendimentoAtualizado) throws BancoDeDadosException {
+    public Atendimento update(Integer id, Atendimento atendimentoAtualizado) throws BancoDeDadosException {
         atendimentoAtualizado.setIdAtendimento(id);
-        return atendimentoRepository.alterarPeloId(id, atendimentoAtualizado) ? atendimentoAtualizado : null;
+        return atendimentoRepository.update(id, atendimentoAtualizado);
     }
 
-    public void deletarPeloId(Integer id){
+    public void deleteById(Integer id){
         try {
-            boolean removeu =  atendimentoRepository.deletarPeloId(id);
+            boolean removeu =  atendimentoRepository.deleteById(id);
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
     }
 
     public Atendimento buscarId(Integer id) throws BancoDeDadosException {
-        return atendimentoRepository.buscarId(id);
+        return atendimentoRepository.findById(id);
     }
 
-    public List<Atendimento> buscarTodos() throws BancoDeDadosException{
-        return atendimentoRepository.buscarTodos();
-    }
 }
