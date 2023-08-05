@@ -25,40 +25,14 @@ public class HospitalService {
     }
 
     public Hospital save(Hospital hospital) throws BancoDeDadosException {
-            hospitalRepository.save(hospital);
-        return hospital;
+        return  hospitalRepository.save(hospital);
     }
 
-    public Hospital update(Integer idHospital, Hospital hospital) {
-        Hospital hospitalEncontrado = null;
-        try {
-            hospitalEncontrado = find(idHospital);
-            hospitalEncontrado.setNome(hospital.getNome());
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return hospitalEncontrado;
+    public Hospital update(Integer idHospital, Hospital hospital) throws BancoDeDadosException {
+        return  hospitalRepository.update(idHospital, hospital);
     }
 
-    public void deleteById(Integer id) {
-        try{
-            Hospital hospitalEncontrado = find(id);
-            hospitalRepository.deleteById(hospitalEncontrado.getIdHospital());
-        }catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Hospital find(Integer id) throws Exception {
-        Hospital hospitalEncontrado = hospitalRepository.findAll().stream()
-                .filter(hospital -> hospital.getIdHospital().equals(id))
-                .findFirst()
-                .get();
- //               .orElseThrow(() -> new RegraDeNegocioException("Pessoa não encontrada!"));
-        return hospitalEncontrado;
+    public boolean deleteById(Integer id) throws BancoDeDadosException {
+        return hospitalRepository.deleteById(id);
     }
 }

@@ -23,28 +23,63 @@ public class HospitalController {
         this.hospitalService = hospitalService;
     }
 
-    @GetMapping("/listar-todos")
-    public List<Hospital> findAll() throws BancoDeDadosException {
-            return hospitalService.findAll();
+    @GetMapping
+    public ResponseEntity<List<Hospital>> findAll() throws BancoDeDadosException {
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.findAll());
     }
 
-    @GetMapping("/listar-pelo-id/{idHospital}")
-    public Hospital findById(@Positive @PathVariable Integer id) throws BancoDeDadosException { /////
-        return hospitalService.findById(id);
+    @GetMapping("/{idHospital}")
+    public ResponseEntity<Hospital> findById(@Positive @PathVariable Integer idHospital) {
+        Hospital hospital = null;
+        try {
+            hospital = hospitalService.findById(idHospital);
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(hospital);
     }
 
-    @PostMapping("/cadastrar")
-    public Hospital save(@Valid @RequestBody Hospital hospital) throws BancoDeDadosException {
-        return hospitalService.save(hospital);
+    @PostMapping
+    public ResponseEntity<Hospital> save(@Valid @RequestBody Hospital hospital) throws BancoDeDadosException {
+        Hospital hospitalSalvo = null;
+        try {
+            hospitalSalvo = hospitalService.save(hospital);
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  ResponseEntity.status(HttpStatus.CREATED).body(hospitalSalvo);
     }
-    @PutMapping("/alterar{idHospital}")
-    public ResponseEntity<Hospital> update(@Positive @PathVariable Integer id, @Valid @RequestBody Hospital hospital){
-        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.update(id, hospital));
+    @PutMapping("/{idHospital}")
+    public ResponseEntity<Hospital> update(@Positive @PathVariable Integer idHospital, @Valid @RequestBody Hospital hospital) throws BancoDeDadosException {
+        Hospital hospitalAtualizado = null;
+        try {
+            hospitalAtualizado = hospitalService.update(idHospital, hospital);
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalAtualizado);
     }
 
-    @PutMapping("/deletar/{idHospital}")
-    public ResponseEntity deleteById(@Positive @PathVariable Integer id){
-        hospitalService.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{idHospital}")
+    public ResponseEntity<Boolean> deleteById(@Positive @PathVariable Integer idHospital){
+
+        try {
+            hospitalService.deleteById(idHospital);
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
