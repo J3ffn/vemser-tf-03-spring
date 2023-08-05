@@ -20,7 +20,7 @@ public class MedicoController {
     public ArrayList<Medico> findAll () {
             ArrayList<Medico> medicos = new ArrayList<>();
             try {
-                medicos= medicoService.listarTodos();
+                medicos= medicoService.findAll();
             } catch (BancoDeDadosException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -34,7 +34,7 @@ public class MedicoController {
     public Medico findById(@PathVariable int id){
         Medico medico = new Medico();
         try {
-            return medicoService.buscarId(id);
+            return medicoService.findById(id);
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e);
         }catch (Exception e){
@@ -45,14 +45,14 @@ public class MedicoController {
 
     @PostMapping()
     public Medico save(@RequestBody Medico medico){
-        return medicoService.inserir(medico);
+        return medicoService.save(medico);
     }
 
     @PutMapping("{id}")
     public Medico update(@PathVariable int id, @RequestBody Medico medico){
         Medico medicoAtualizado = new Medico();
         try {
-            return medicoService.alterarPeloId(id, medico);
+            return medicoService.update(id, medico);
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e);
         } catch (Exception e ){

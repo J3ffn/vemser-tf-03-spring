@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.model.dto.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import br.com.dbc.wbhealth.repository.MedicoRepository;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,10 @@ public class MedicoService {
         return medicoRepository.buscarCpf(medico);
     }
 
-    public Medico buscarId(Integer id) throws BancoDeDadosException {
-        return medicoRepository.buscarId(id);
-    }
-    public Medico inserir(Medico medico) {
+//    public Medico buscarId(Integer id) throws BancoDeDadosException {
+//        return medicoRepository.findById(id);
+
+    public Medico save(Medico medico) {
         Medico novoMedico=new Medico();
         try {
             String cpf = medico.getCpf().replaceAll("[^0-9]", "");
@@ -38,7 +39,7 @@ public class MedicoService {
                 throw new Exception("CEP inválido! Deve conter exatamente 8 dígitos numéricos.");
             }
             medico.setCep(cep);
-            medicoRepository.cadastrar(medico);
+            medicoRepository.save(medico);
             novoMedico= medico;
 
 //            System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
@@ -51,23 +52,24 @@ public class MedicoService {
         return novoMedico;
     }
 
-    public ArrayList<Medico> listarTodos() throws BancoDeDadosException {
-        return medicoRepository.listarTodos();
+    public ArrayList<Medico> findAll() throws BancoDeDadosException {
+        ArrayList<Medico> listaMedico= medicoRepository.findAll();
+        return listaMedico;
     }
 
-    public void listarPeloId(Integer id) throws BancoDeDadosException {
-        Medico medico = medicoRepository.listarPeloId(id);
-        System.out.println(medico);
+    public Medico findById(Integer id) throws BancoDeDadosException {
+        Medico medico = medicoRepository.findById(id);
+        return medico;
     }
 
-    public Medico alterarPeloId(Integer id, Medico medicoAtualizado) throws BancoDeDadosException {
+    public Medico update(Integer idMedico, Medico medicoAtualizado) throws BancoDeDadosException {
         Medico medico = new Medico();
         try {
-            boolean consegueEditar = medicoRepository.alterarPeloId(id, medicoAtualizado);
-            if (consegueEditar) {
+            Medico medicoAux= medicoRepository.findAll().stream()
+                    .filter(x -> x.getIdMedico() == idMedico)
+                    .findFirst().orElseThrow(() -> new BancoDeDadosException (new Throwable("Id não encontrado")));
+            medico = medicoRepository.findById(idMedico);
 
-                medico = medicoRepository.listarPeloId(id);
-            }
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
@@ -76,7 +78,7 @@ public class MedicoService {
     public String deletarPeloId(Integer id) {
         String retorno = new String();
         try {
-            boolean removeu = medicoRepository.deletarPeloId(id);
+            boolean removeu = medicoRepository.deleteById(id);
             if (removeu) {
                 retorno = "Medico deletado com sucesso.";
             }
