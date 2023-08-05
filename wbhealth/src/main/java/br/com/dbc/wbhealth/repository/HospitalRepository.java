@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.repository;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.model.entity.Hospital;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public class HospitalRepository implements Repositorio<Integer, Hospital> {
 
     @Override
-    public Integer getProximoId(Connection connection, String nextSequence) throws SQLException {
+    public Integer getProximoId(Connection connection, String nextSequence) throws BancoDeDadosException {
         try {
             String sql = "SELECT " + nextSequence + " mysequence from DUAL";
             Statement stmt = connection.createStatement();
@@ -62,54 +63,23 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
 
     @Override
     public Hospital findById(Integer id) throws BancoDeDadosException {
-        Hospital hospital = new Hospital();
+        Hospital hospital = null;
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM HOSPITAL WHERE ID_HOSPITAL = " + id;
 
-            ResultSet res = stmt.executeQuery(sql);
+            PreparedStatement st = con.prepareStatement(sql);
 
-            hospital.setIdHospital(res.getInt("id_hospital"));
-            hospital.setNome(res.getString("nome"));
+            ResultSet res = st.executeQuery(sql);
+            if (res.next()) {
+            Integer idHospital = res.getInt("id_hospital");
+            String nome = res.getString("nome");
 
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            hospital = new Hospital(idHospital, nome);
             }
-        }
-        return hospital;
-    }
 
-    @Override
-    public Hospital save(Hospital hospital) throws BancoDeDadosException {
-        Connection con = null;
-        try {
-            con = ConexaoBancoDeDados.getConnection();
-
-            Integer proximoHospitalId = this.getProximoId(con, "seq_hospital.nextval");
-            hospital.setIdHospital(proximoHospitalId);
-
-            String sqlHospital = "INSERT INTO Hospital\n" +
-                    "(id_hospital, nome)\n" +
-                    "VALUES(?, ?)\n";
-
-            PreparedStatement stHospital = con.prepareStatement(sqlHospital);
-
-            stHospital.setInt(1, hospital.getIdHospital());
-            stHospital.setString(2, hospital.getNome());
-
-            int hospitaisInseridos = stHospital.executeUpdate();
-            if (hospitaisInseridos == 0) throw new SQLException("Ocorreu um erro ao inserir!");
-            return hospital;
         } catch (BancoDeDadosException e) {
             System.err.println("Erro ao acessar o banco de dados:");
             e.printStackTrace();
@@ -130,26 +100,35 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
     }
 
     @Override
-    public Hospital update(Integer id, Hospital hospital) throws BancoDeDadosException {
-
+    public Hospital save(Hospital hospital) throws BancoDeDadosException {
         Connection con = null;
+        Hospital hospitalAux = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            Hospital hospital1Id = this.findById(id);
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE HOSPITAL SET nome = ?\n");
-            sql.append("WHERE HOSPITAL.id_hospital = ?");
 
-            PreparedStatement st = con.prepareStatement(sql.toString());
+            Integer proximoHospitalId = this.getProximoId(con, "seq_hospital.nextval");
+            hospital.setIdHospital(proximoHospitalId);
 
-            st.setString(1, hospital.getNome());
-            st.setInt(2, id);
+            String sqlHospital = "INSERT INTO Hospital\n" +
+                    "(id_hospital, nome)\n" +
+                    "VALUES(?, ?)\n";
 
-            int res = st.executeUpdate();
+            PreparedStatement stHospital = con.prepareStatement(sqlHospital);
 
-            return hospital;
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
+            stHospital.setInt(1, hospital.getIdHospital());
+            stHospital.setString(2, hospital.getNome());
+
+            int hospitaisInseridos = stHospital.executeUpdate();
+
+            if (hospitaisInseridos == 0) throw new SQLException("Ocorreu um erro ao inserir!");
+            hospitalAux = findById(proximoHospitalId);
+
+        } catch (BancoDeDadosException e) {
+            System.err.println("Erro ao acessar o banco de dados:");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Erro inesperado:");
+            e.printStackTrace();
         } finally {
             try {
                 if (con != null) {
@@ -160,6 +139,60 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
                 throw new BancoDeDadosException(e.getCause());
             }
         }
+        return hospitalAux;
+    }
+
+    @Override
+    public Hospital update(Integer id, Hospital hospital) throws BancoDeDadosException {
+
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+
+            Hospital hospital1Id = this.findById(id);
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE HOSPITAL SET \n");
+
+            List<String> camposAtualizados = new ArrayList<>();
+            if (hospital != null) {
+                if (hospital.getNome() != null) {
+                    camposAtualizados.add("nome = ?");
+                }
+            }
+
+            if (!camposAtualizados.isEmpty()) {
+                sql.append(String.join(", ", camposAtualizados));
+                sql.append(" WHERE id_hospital = ?");
+
+                PreparedStatement st = con.prepareStatement(sql.toString());
+
+                int index = 1;
+                if (hospital != null) {
+                    if (hospital.getNome() != null) {
+                        st.setString(index++, hospital.getNome());
+                    }
+                }
+
+                st.setInt(index++, hospital1Id.getIdHospital());
+
+                int res = st.executeUpdate();
+
+                return findById(id);
+            } else {
+                throw new BancoDeDadosException(new Throwable("Nenhum campo a atualizar"));
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -168,13 +201,24 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
+            Hospital hospital = findById(id);
+
             String sql = "DELETE FROM HOSPITAL WHERE id_hospital = ?";
 
-            PreparedStatement stmt = con.prepareStatement(sql);
+            PreparedStatement st = con.prepareStatement(sql);
 
-            stmt.setInt(1, id);
+            st.setInt(1, id);
 
-            int res = stmt.executeUpdate();
+            int res = st.executeUpdate();
+
+            if (res > 0) {
+                String sqlHospital = "DELETE FROM HOSPITAL WHERE id_hospital = ?";
+                PreparedStatement sqlHospitais = con.prepareStatement(sqlHospital);
+                sqlHospitais.setInt(1, hospital.getIdHospital());
+                res =st.executeUpdate();
+            }else {
+                throw new SQLException("Ocorreu um erro na operação");
+            }
 
             return res > 0;
         } catch (SQLException e) {
