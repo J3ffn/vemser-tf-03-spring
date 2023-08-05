@@ -1,11 +1,9 @@
+-- //////////////////////////////// HOSPITAL ////////////////////////////////// --
 CREATE TABLE Hospital (
     id_hospital NUMBER(3) NOT NULL,
     nome VARCHAR2(50) NOT NULL,
      CONSTRAINT PK_HOSPITAL PRIMARY KEY(id_hospital)     
 );
-
-INSERT INTO Hospital(id_hospital, nome)
-	VALUES(1, 'WB Health');
 
 -- ////////////////////////////////// PESSOA ////////////////////////////////// --
 CREATE TABLE Pessoa(
@@ -40,11 +38,6 @@ CREATE SEQUENCE SEQ_PACIENTE
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-
----- INSERT PACIENTE ----
-INSERT INTO Paciente (id_paciente, id_hospital, id_pessoa)
-	VALUES (SEQ_PACIENTE.nextval, 1, 1);
-
 	
 -- ////////////////////////////////// FUNCIONÁRIO ////////////////////////////////// --
 CREATE TABLE Funcionario (
@@ -62,11 +55,6 @@ CREATE SEQUENCE SEQ_FUNCIONARIO
  INCREMENT BY   1
  NOCACHE
  NOCYCLE;
-
-
----- INSERT FUNCIONARIO ----
-INSERT INTO Funcionario (id_funcionario, id_hospital, id_pessoa)
-	VALUES (SEQ_FUNCIONARIO.nextval, 1, 2);
 
 -- ////////////////////////////////// MEDICO ////////////////////////////////// --	
 CREATE TABLE Medico (
