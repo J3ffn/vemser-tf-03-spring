@@ -24,18 +24,6 @@ public class PacienteService {
     }
 
     public Paciente save(Paciente paciente) throws BancoDeDadosException {
-        /*String cpf = paciente.getCpf().replaceAll("[^0-9]", "");
-        if (cpf.length() != 11) {
-            throw new Exception("CPF Invalido!");
-        }
-        paciente.setCpf(cpf);
-
-        String cep = paciente.getCep().replaceAll("[^0-9]", "");
-        if (cep.length() != 8) {
-            throw new Exception("CEP inválido! Deve conter exatamente 8 dígitos numéricos.");
-        }
-        paciente.setCep(cep);*/
-
         return pacienteRepository.save(paciente);
     }
 
@@ -47,7 +35,7 @@ public class PacienteService {
         pacienteRepository.deleteById(idPaciente);
     }
 
-    public boolean buscarCpf(Paciente paciente){
+    /*public boolean buscarCpf(Paciente paciente) throws BancoDeDadosException {
         return pacienteRepository.buscarCpf(paciente);
-    }
+    }*/
 }
