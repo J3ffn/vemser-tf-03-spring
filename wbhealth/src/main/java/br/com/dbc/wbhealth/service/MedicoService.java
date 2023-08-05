@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.model.dto.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import br.com.dbc.wbhealth.repository.MedicoRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class MedicoService {
 
 //    public Medico buscarId(Integer id) throws BancoDeDadosException {
 //        return medicoRepository.findById(id);
-    }
+
     public Medico save(Medico medico) {
         Medico novoMedico=new Medico();
         try {
@@ -52,7 +53,8 @@ public class MedicoService {
     }
 
     public ArrayList<Medico> findAll() throws BancoDeDadosException {
-        return medicoRepository.findAll();
+        ArrayList<Medico> listaMedico= medicoRepository.findAll();
+        return listaMedico;
     }
 
     public Medico findById(Integer id) throws BancoDeDadosException {
@@ -60,14 +62,14 @@ public class MedicoService {
         return medico;
     }
 
-    public Medico update(Integer id, Medico medicoAtualizado) throws BancoDeDadosException {
+    public Medico update(Integer idMedico, Medico medicoAtualizado) throws BancoDeDadosException {
         Medico medico = new Medico();
         try {
-            boolean consegueEditar = medicoRepository.alterarPeloId(id, medicoAtualizado);
-            if (consegueEditar) {
+            Medico medicoAux= medicoRepository.findAll().stream()
+                    .filter(x -> x.getIdMedico() == idMedico)
+                    .findFirst().orElseThrow(() -> new BancoDeDadosException (new Throwable("Id não encontrado")));
+            medico = medicoRepository.findById(idMedico);
 
-                medico = medicoRepository.listarPeloId(id);
-            }
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
@@ -76,7 +78,7 @@ public class MedicoService {
     public String deletarPeloId(Integer id) {
         String retorno = new String();
         try {
-            boolean removeu = medicoRepository.deletarPeloId(id);
+            boolean removeu = medicoRepository.deleteById(id);
             if (removeu) {
                 retorno = "Medico deletado com sucesso.";
             }

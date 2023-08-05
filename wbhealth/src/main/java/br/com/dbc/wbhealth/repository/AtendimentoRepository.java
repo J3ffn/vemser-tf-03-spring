@@ -15,8 +15,9 @@ import java.util.List;
 public class AtendimentoRepository implements Repositorio<Integer, Atendimento> {
 
     @Override
-    public void cadastrar(Atendimento atendimento) throws BancoDeDadosException {
+    public Atendimento save(Atendimento atendimento) throws BancoDeDadosException {
         Connection con = null;
+        Atendimento atendicmentoAux = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -46,6 +47,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
             if (atendimentosInseridos == 0) throw new SQLException("Ocorreu um erro ao inserir!");
 
+            atendicmentoAux = findById(proximoAtendimentoId);
         }catch (BancoDeDadosException e) {
             System.err.println("Erro ao acessar o banco de dados:");
             e.printStackTrace();
@@ -61,12 +63,13 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
                 e.printStackTrace();
             }
         }
+        return atendicmentoAux;
     }
 
     // Criar Update
 
     @Override
-    public List<Atendimento> listarTodos() throws BancoDeDadosException {
+    public List<Atendimento> findAll() throws BancoDeDadosException {
         List<Atendimento> atendimentos = new ArrayList<>();
         Connection con = null;
         try {
@@ -109,8 +112,8 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
         return atendimentos;
     }
 
-    @Override
-    public Atendimento listarPeloId(Integer id) throws BancoDeDadosException {
+
+    public Atendimento findById(Integer id) throws BancoDeDadosException {
         Atendimento atendimento = null;
         Connection con = null;
         try {
@@ -153,12 +156,12 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     }
 
     @Override
-    public boolean alterarPeloId(Integer id, Atendimento atendimento) throws BancoDeDadosException {
+    public Atendimento update(Integer id, Atendimento atendimento) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            Atendimento atendimentoId = this.listarPeloId(id);
+            Atendimento atendimentoId = this.findById(id);
 
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE ATENDIMENTO SET \n");
@@ -199,10 +202,11 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
                 int res = st.executeUpdate();
 
-                return res > 0;
+                Atendimento atendimentoAux = findById(id);
+
+                return atendimento;
             } else {
-                System.err.println("Nenhum campo para atualizar.");
-                return false;
+                throw new BancoDeDadosException(new Throwable("Nenhum campo a atualizar"));
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -218,12 +222,12 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     }
 
     @Override
-    public boolean deletarPeloId(Integer id) throws BancoDeDadosException {
+    public boolean deleteById(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            Atendimento atendimento = listarPeloId(id);
+            Atendimento atendimento = findById(id);
 
             String sql = "DELETE FROM ATENDIMENTO WHERE id_atendimento = ?";
 
@@ -271,12 +275,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
         }
     }
 
-    @Override
-    public Atendimento buscarId(Integer id) throws BancoDeDadosException {
-        return this.listarPeloId(id);
-    }
 
-    public List<Atendimento> buscarTodos()throws BancoDeDadosException {
-        return this.listarTodos();
-    }
+
+
 }
