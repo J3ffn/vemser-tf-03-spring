@@ -1,7 +1,6 @@
 package br.com.dbc.wbhealth.repository;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
-import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.model.entity.Hospital;
 import org.springframework.stereotype.Repository;
 
