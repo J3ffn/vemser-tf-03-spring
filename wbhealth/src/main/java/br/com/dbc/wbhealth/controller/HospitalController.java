@@ -24,27 +24,27 @@ public class HospitalController {
     }
 
     @GetMapping("/listar-todos")
-    public List<Hospital> listarTodos() throws BancoDeDadosException {
-            return hospitalService.listarTodos();
+    public List<Hospital> findAll() throws BancoDeDadosException {
+            return hospitalService.findAll();
     }
 
     @GetMapping("/listar-pelo-id/{idHospital}")
-    public Hospital listarPeloID(@Positive @PathVariable Integer id) throws BancoDeDadosException { /////
-        return hospitalService.listarPeloId(id);
+    public Hospital findById(@Positive @PathVariable Integer id) throws BancoDeDadosException { /////
+        return hospitalService.findById(id);
     }
 
     @PostMapping("/cadastrar")
-    public Hospital cadastrar(@Valid @RequestBody Hospital hospital) {
-        return hospitalService.cadastrar(hospital);
+    public Hospital save(@Valid @RequestBody Hospital hospital) throws BancoDeDadosException {
+        return hospitalService.save(hospital);
     }
     @PutMapping("/alterar{idHospital}")
-    public ResponseEntity<Hospital> alterarPeloId(@Positive @PathVariable Integer id, @Valid @RequestBody Hospital hospital){
-        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.alterarPeloId(id, hospital));
+    public ResponseEntity<Hospital> update(@Positive @PathVariable Integer id, @Valid @RequestBody Hospital hospital){
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.update(id, hospital));
     }
 
     @PutMapping("/deletar/{idHospital}")
-    public ResponseEntity deletarPeloId(@Positive @PathVariable Integer id){
-        hospitalService.deletarPeloId(id);
+    public ResponseEntity deleteById(@Positive @PathVariable Integer id){
+        hospitalService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
