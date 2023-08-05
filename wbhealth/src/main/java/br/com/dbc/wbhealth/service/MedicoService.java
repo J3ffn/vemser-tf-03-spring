@@ -21,10 +21,10 @@ public class MedicoService {
         return medicoRepository.buscarCpf(medico);
     }
 
-    public Medico buscarId(Integer id) throws BancoDeDadosException {
-        return medicoRepository.buscarId(id);
+//    public Medico buscarId(Integer id) throws BancoDeDadosException {
+//        return medicoRepository.findById(id);
     }
-    public Medico inserir(Medico medico) {
+    public Medico save(Medico medico) {
         Medico novoMedico=new Medico();
         try {
             String cpf = medico.getCpf().replaceAll("[^0-9]", "");
@@ -38,7 +38,7 @@ public class MedicoService {
                 throw new Exception("CEP inválido! Deve conter exatamente 8 dígitos numéricos.");
             }
             medico.setCep(cep);
-            medicoRepository.cadastrar(medico);
+            medicoRepository.save(medico);
             novoMedico= medico;
 
 //            System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
@@ -51,16 +51,16 @@ public class MedicoService {
         return novoMedico;
     }
 
-    public ArrayList<Medico> listarTodos() throws BancoDeDadosException {
-        return medicoRepository.listarTodos();
+    public ArrayList<Medico> findAll() throws BancoDeDadosException {
+        return medicoRepository.findAll();
     }
 
-    public void listarPeloId(Integer id) throws BancoDeDadosException {
-        Medico medico = medicoRepository.listarPeloId(id);
-        System.out.println(medico);
+    public Medico findById(Integer id) throws BancoDeDadosException {
+        Medico medico = medicoRepository.findById(id);
+        return medico;
     }
 
-    public Medico alterarPeloId(Integer id, Medico medicoAtualizado) throws BancoDeDadosException {
+    public Medico update(Integer id, Medico medicoAtualizado) throws BancoDeDadosException {
         Medico medico = new Medico();
         try {
             boolean consegueEditar = medicoRepository.alterarPeloId(id, medicoAtualizado);
