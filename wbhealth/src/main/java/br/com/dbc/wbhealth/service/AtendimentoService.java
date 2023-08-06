@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.repository.AtendimentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,44 +18,37 @@ public class AtendimentoService {
         this.atendimentoRepository = atendimentoRepository;
     }
 
-    public Atendimento inserir(Atendimento atendimento) throws BancoDeDadosException {
-        atendimentoRepository.cadastrar(atendimento);
+    public Atendimento save(Atendimento atendimento) throws BancoDeDadosException {
+        atendimentoRepository.save(atendimento);
         return atendimento;
     }
 
-    public List<Atendimento> listarTodos() throws BancoDeDadosException {
-        return atendimentoRepository.listarTodos();
+    public List<Atendimento> findAll() throws BancoDeDadosException {
+        return atendimentoRepository.findAll();
     }
 
-    public Atendimento getAtendimentoPeloId(Integer id) throws BancoDeDadosException {
-        return atendimentoRepository.listarPeloId(id);
+    public Atendimento findById(Integer id) throws BancoDeDadosException {
+        return atendimentoRepository.findById(id);
     }
 
-    public List<Atendimento> getAtendimentoPeloIdUsuario(Integer idPaciente) throws BancoDeDadosException {
-        return listarTodos()
+    public List<Atendimento> bucarAtendimentoPeloIdUsuario(Integer idPaciente) throws BancoDeDadosException {
+        return findAll()
                 .stream()
                 .filter(atendimento -> atendimento.getIdPaciente().equals(idPaciente))
                 .toList();
     }
 
-    public Atendimento alterarPeloId(Integer id, Atendimento atendimentoAtualizado) throws BancoDeDadosException {
+    public Atendimento update(Integer id, Atendimento atendimentoAtualizado) throws BancoDeDadosException {
         atendimentoAtualizado.setIdAtendimento(id);
-        return atendimentoRepository.alterarPeloId(id, atendimentoAtualizado) ? atendimentoAtualizado : null;
+        return atendimentoRepository.update(id, atendimentoAtualizado);
     }
 
-    public void deletarPeloId(Integer id){
+    public void deletarPeloId(Integer id) throws EntityNotFound {
         try {
-            boolean removeu =  atendimentoRepository.deletarPeloId(id);
+            atendimentoRepository.deleteById(id);
         } catch (BancoDeDadosException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    public Atendimento buscarId(Integer id) throws BancoDeDadosException {
-        return atendimentoRepository.buscarId(id);
-    }
-
-    public List<Atendimento> buscarTodos() throws BancoDeDadosException{
-        return atendimentoRepository.buscarTodos();
-    }
 }

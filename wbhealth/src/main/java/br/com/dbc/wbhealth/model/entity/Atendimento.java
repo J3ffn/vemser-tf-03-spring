@@ -1,12 +1,10 @@
 package br.com.dbc.wbhealth.model.entity;
 
 import br.com.dbc.wbhealth.model.enumarator.TipoDeAtendimento;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -29,6 +27,7 @@ public class Atendimento {
 
     @NotNull
     @FutureOrPresent
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataAtendimento;
 
     @NotBlank
