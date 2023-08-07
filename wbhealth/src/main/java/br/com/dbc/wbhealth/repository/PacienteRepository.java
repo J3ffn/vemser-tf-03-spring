@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.repository;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.entity.Paciente;
 import br.com.dbc.wbhealth.repository.Repositorio;
 import org.springframework.stereotype.Repository;
@@ -40,7 +41,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
     }
 
     @Override
-    public Paciente findById(Integer idPaciente) throws BancoDeDadosException {
+    public Paciente findById(Integer idPaciente) throws BancoDeDadosException, EntityNotFound {
         Paciente paciente = null;
         Connection conexao = null;
 
@@ -63,6 +64,10 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         } finally {
             fecharConexaoComBancoDeDados(conexao);
         }
+
+        if(paciente == null)
+            throw new EntityNotFound("Paciente não encontrado!");
+
         return paciente;
     }
 
@@ -86,7 +91,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
 
             novoPaciente = findById(paciente.getIdPaciente());
 
-        } catch (SQLException e) {
+        } catch (SQLException | EntityNotFound e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             fecharConexaoComBancoDeDados(conexao);
@@ -96,7 +101,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
     }
 
     @Override
-    public Paciente update(Integer idPaciente, Paciente pacienteModificado) throws BancoDeDadosException {
+    public Paciente update(Integer idPaciente, Paciente pacienteModificado)
+            throws BancoDeDadosException, EntityNotFound {
         Paciente pacienteAtualizado = null;
         Connection conexao = null;
 
@@ -131,7 +137,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
     }
 
     @Override
-    public boolean deleteById(Integer idPaciente) throws BancoDeDadosException {
+    public boolean deleteById(Integer idPaciente) throws BancoDeDadosException, EntityNotFound {
         Connection conexao = null;
         try {
             Paciente deletarPaciente = findById(idPaciente);
