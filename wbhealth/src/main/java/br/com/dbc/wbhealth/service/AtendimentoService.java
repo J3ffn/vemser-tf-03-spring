@@ -2,8 +2,8 @@ package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
-import br.com.dbc.wbhealth.model.dto.input.AtendimentoInputDTO;
-import br.com.dbc.wbhealth.model.dto.output.AtendimentoOutputDTO;
+import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoInputDTO;
+import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.repository.AtendimentoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +36,7 @@ public class AtendimentoService {
                 .toList();
     }
 
-    public AtendimentoOutputDTO findById(Integer id) throws BancoDeDadosException {
+    public AtendimentoOutputDTO findById(Integer id) throws BancoDeDadosException, EntityNotFound {
         return objectMapper.convertValue(atendimentoRepository.findById(id), AtendimentoOutputDTO.class);
     }
 
@@ -47,7 +47,7 @@ public class AtendimentoService {
                 .toList();
     }
 
-    public AtendimentoOutputDTO update(Integer id, AtendimentoInputDTO atendimentoAtualizado) throws BancoDeDadosException {
+    public AtendimentoOutputDTO update(Integer id, AtendimentoInputDTO atendimentoAtualizado) throws BancoDeDadosException, EntityNotFound {
 
         Atendimento atendimentoConvertido = objectMapper.convertValue(atendimentoAtualizado, Atendimento.class);
         Atendimento atendimentoModificado = atendimentoRepository.update(id, atendimentoConvertido);

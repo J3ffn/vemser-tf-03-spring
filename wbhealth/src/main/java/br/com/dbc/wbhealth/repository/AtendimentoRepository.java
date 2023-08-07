@@ -18,7 +18,6 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     @Override
     public Atendimento save(Atendimento atendimento) throws BancoDeDadosException {
         Connection con = null;
-        Atendimento atendicmentoAux = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -117,7 +116,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     }
 
     @Override
-    public Atendimento findById(Integer id) throws BancoDeDadosException {
+    public Atendimento findById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Atendimento atendimento;
         Connection con = null;
         try {
@@ -131,7 +130,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
             List<Atendimento> lista = this.pupuleAtendimentos(st, sql);
 
             if(lista.isEmpty()) {
-                throw new IndexOutOfBoundsException("Id inválido!");
+                throw new EntityNotFound("Id inválido!");
             }
 
             atendimento = lista.get(0);
@@ -154,10 +153,14 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     }
 
     @Override
-    public Atendimento update(Integer id, Atendimento atendimento) throws BancoDeDadosException {
+    public Atendimento update(Integer id, Atendimento atendimento) throws BancoDeDadosException, EntityNotFound {
         Connection con = null;
         try {
             Atendimento atendimentoBuscado = this.findById(id);
+
+            if (atendimentoBuscado == null) {
+                throw new EntityNotFound("ID de atendimento inválido!");
+            }
 
             con = ConexaoBancoDeDados.getConnection();
 
@@ -196,10 +199,14 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     }
 
     @Override
-    public boolean deleteById(Integer id) throws BancoDeDadosException {
+    public boolean deleteById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Connection con = null;
         try {
             Atendimento atendimento = findById(id);
+
+            if (atendimento == null) {
+                throw new EntityNotFound("Atendimento não encontrado!");
+            }
 
             con = ConexaoBancoDeDados.getConnection();
 
@@ -214,7 +221,8 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-        } finally {
+
+        }  finally {
             try {
                 if (con != null) {
                     con.close();

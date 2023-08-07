@@ -2,9 +2,8 @@ package br.com.dbc.wbhealth.controller;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
-import br.com.dbc.wbhealth.model.dto.input.AtendimentoInputDTO;
-import br.com.dbc.wbhealth.model.dto.output.AtendimentoOutputDTO;
-import br.com.dbc.wbhealth.model.entity.Atendimento;
+import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoInputDTO;
+import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
 import br.com.dbc.wbhealth.service.AtendimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,7 @@ public class AtendimentoController {
     }
 
     @GetMapping("/{idAtendimento}")
-    public ResponseEntity<AtendimentoOutputDTO> buscarAtendimentoPeloId(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento) throws BancoDeDadosException {
+    public ResponseEntity<AtendimentoOutputDTO> buscarAtendimentoPeloId(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento) throws BancoDeDadosException, EntityNotFound {
         return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.findById(idAtendimento));
     }
 
@@ -50,7 +49,7 @@ public class AtendimentoController {
 
     @PutMapping("/{idAtendimento}")
     public ResponseEntity<AtendimentoOutputDTO> alterarPeloId(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento,
-                                                              @Valid @RequestBody AtendimentoInputDTO atendimento) throws BancoDeDadosException {
+                                                              @Valid @RequestBody AtendimentoInputDTO atendimento) throws BancoDeDadosException, EntityNotFound {
         return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.update(idAtendimento, atendimento));
     }
 
