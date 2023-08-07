@@ -1,11 +1,8 @@
 package br.com.dbc.wbhealth.model.entity;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
-
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,7 +19,7 @@ public abstract class Pessoa {
     @NotBlank
     private String nome;
     @NotBlank
-    @Size(min =8, max=8)
+    @Size(min = 8, max = 8)
     private String cep;
     @NotNull
     @PastOrPresent

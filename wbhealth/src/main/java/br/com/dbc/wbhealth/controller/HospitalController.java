@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/hospital")
 @Validated
-public class HospitalController {
+public class HospitalController{
 
     private final HospitalService hospitalService;
 
@@ -43,7 +43,7 @@ public class HospitalController {
     }
 
     @PostMapping
-    public ResponseEntity<Hospital> save(@Valid @RequestBody Hospital hospital) throws BancoDeDadosException {
+    public ResponseEntity<Hospital> save(@Valid @RequestBody Hospital hospital) {
         Hospital hospitalSalvo = null;
         try {
             hospitalSalvo = hospitalService.save(hospital);
@@ -56,7 +56,7 @@ public class HospitalController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(hospitalSalvo);
     }
     @PutMapping("/{idHospital}")
-    public ResponseEntity<Hospital> update(@Positive @PathVariable Integer idHospital, @Valid @RequestBody Hospital hospital) throws BancoDeDadosException {
+    public ResponseEntity<Hospital> update(@Positive @PathVariable Integer idHospital, @Valid @RequestBody Hospital hospital){
         Hospital hospitalAtualizado = null;
         try {
             hospitalAtualizado = hospitalService.update(idHospital, hospital);
@@ -71,7 +71,6 @@ public class HospitalController {
 
     @DeleteMapping("/{idHospital}")
     public ResponseEntity<Boolean> deleteById(@Positive @PathVariable Integer idHospital){
-
         try {
             hospitalService.deleteById(idHospital);
         } catch (BancoDeDadosException e) {
