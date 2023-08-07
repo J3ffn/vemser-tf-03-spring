@@ -69,4 +69,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    @ExceptionHandler(NegocioException.class)
+    public ResponseEntity<Object> handleException(NegocioException exception) {
+
+        Map<String, Object> body = createBody(exception);
+        body.put("status", HttpStatus.NOT_FOUND.value());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
 }

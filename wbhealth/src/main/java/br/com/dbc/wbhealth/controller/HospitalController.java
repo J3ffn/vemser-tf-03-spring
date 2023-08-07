@@ -1,7 +1,7 @@
 package br.com.dbc.wbhealth.controller;
 
-import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
-import br.com.dbc.wbhealth.model.entity.Hospital;
+import br.com.dbc.wbhealth.model.dto.HospitalOutputDTO;
+import br.com.dbc.wbhealth.model.dto.HospitalInputDTO;
 import br.com.dbc.wbhealth.service.HospitalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,61 +24,27 @@ public class HospitalController{
     }
 
     @GetMapping
-    public ResponseEntity<List<Hospital>> findAll() throws BancoDeDadosException {
+    public ResponseEntity<List<HospitalOutputDTO>> findAll(){
         return ResponseEntity.status(HttpStatus.OK).body(hospitalService.findAll());
     }
 
     @GetMapping("/{idHospital}")
-    public ResponseEntity<Hospital> findById(@Positive @PathVariable Integer idHospital) {
-        Hospital hospital = null;
-        try {
-            hospital = hospitalService.findById(idHospital);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(hospital);
+    public ResponseEntity<HospitalOutputDTO> findById(@Positive @PathVariable Integer idHospital){
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.findById(idHospital));
     }
 
     @PostMapping
-    public ResponseEntity<Hospital> save(@Valid @RequestBody Hospital hospital) {
-        Hospital hospitalSalvo = null;
-        try {
-            hospitalSalvo = hospitalService.save(hospital);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return  ResponseEntity.status(HttpStatus.CREATED).body(hospitalSalvo);
+    public ResponseEntity<HospitalOutputDTO> save(@Valid @RequestBody HospitalInputDTO hospital){
+        return  ResponseEntity.status(HttpStatus.CREATED).body(hospitalService.save(hospital));
     }
     @PutMapping("/{idHospital}")
-    public ResponseEntity<Hospital> update(@Positive @PathVariable Integer idHospital, @Valid @RequestBody Hospital hospital){
-        Hospital hospitalAtualizado = null;
-        try {
-            hospitalAtualizado = hospitalService.update(idHospital, hospital);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(hospitalAtualizado);
+    public ResponseEntity<HospitalOutputDTO> update(@Positive @PathVariable Integer idHospital, @Valid @RequestBody HospitalInputDTO hospital){
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.update(idHospital, hospital));
     }
 
     @DeleteMapping("/{idHospital}")
     public ResponseEntity<Boolean> deleteById(@Positive @PathVariable Integer idHospital){
-        try {
-            hospitalService.deleteById(idHospital);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        hospitalService.deleteById(idHospital);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

@@ -73,10 +73,10 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
 
             ResultSet res = st.executeQuery(sql);
             if (res.next()) {
-            Integer idHospital = res.getInt("id_hospital");
-            String nome = res.getString("nome");
+                Integer idHospital = res.getInt("id_hospital");
+                String nome = res.getString("nome");
 
-            hospital = new Hospital(idHospital, nome);
+                hospital = new Hospital(idHospital, nome);
             }
 
         } catch (BancoDeDadosException e) {
@@ -148,39 +148,24 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            Hospital hospital1Id = this.findById(id);
+            Hospital hospitalBd = this.findById(id);
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE HOSPITAL SET \n");
+            sql.append("UPDATE HOSPITAL SET nome = ?");
+            sql.append(" WHERE id_hospital = ?");
 
-            List<String> camposAtualizados = new ArrayList<>();
-            if (hospital != null) {
-                if (hospital.getNome() != null) {
-                    camposAtualizados.add("nome = ?");
-                }
+            PreparedStatement st = con.prepareStatement(sql.toString());
+
+            int index = 1;
+
+            if (hospital != null && hospital.getNome() != null) {
+                st.setString(index++, hospital.getNome());
             }
 
-            if (!camposAtualizados.isEmpty()) {
-                sql.append(String.join(", ", camposAtualizados));
-                sql.append(" WHERE id_hospital = ?");
+            st.setInt(index++, hospitalBd.getIdHospital());
+            st.executeUpdate();
 
-                PreparedStatement st = con.prepareStatement(sql.toString());
-
-                int index = 1;
-                if (hospital != null) {
-                    if (hospital.getNome() != null) {
-                        st.setString(index++, hospital.getNome());
-                    }
-                }
-
-                st.setInt(index++, hospital1Id.getIdHospital());
-
-                int res = st.executeUpdate();
-
-                return findById(id);
-            } else {
-                throw new BancoDeDadosException(new Throwable("Nenhum campo a atualizar"));
-            }
+            return findById(id);
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
@@ -214,11 +199,10 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
                 String sqlHospital = "DELETE FROM HOSPITAL WHERE id_hospital = ?";
                 PreparedStatement sqlHospitais = con.prepareStatement(sqlHospital);
                 sqlHospitais.setInt(1, hospital.getIdHospital());
-                res =st.executeUpdate();
-            }else {
+                res = st.executeUpdate();
+            } else {
                 throw new SQLException("Ocorreu um erro na operação");
             }
-
             return res > 0;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());

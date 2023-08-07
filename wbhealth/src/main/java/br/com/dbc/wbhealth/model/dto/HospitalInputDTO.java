@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HospitalnputDTO {
+public class HospitalInputDTO {
 
     @NotBlank
     @Size(max = 50)
