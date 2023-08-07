@@ -17,7 +17,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
     @Override
     public Atendimento save(Atendimento atendimento) throws BancoDeDadosException {
-        Connection con;
+        Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -44,13 +44,19 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
             stAtendimento.executeUpdate();
 
-            con.close();
-
             return atendimento;
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
 
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -68,10 +74,9 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
                 LocalDate dataAtendimento = res.getDate("data_atendimento").toLocalDate();
                 String laudo = res.getString("laudo");
                 TipoDeAtendimento tipoDeAtendimento = TipoDeAtendimento.getTipo(res.getString("tipo_de_atendimento"));
+                Double valorAtendimento = res.getDouble("valor_atendimento");
 
-                String dataFormatada = dataAtendimento.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-                Atendimento atendimento = new Atendimento(idHospital, idPaciente, idMedico, dataAtendimento, laudo, tipoDeAtendimento);
+                Atendimento atendimento = new Atendimento(idAtendimento, idHospital, idPaciente, idMedico, dataAtendimento, laudo, tipoDeAtendimento, valorAtendimento);
 
                 atendimento.setIdAtendimento(idAtendimento);
                 atendimentos.add(atendimento);
@@ -114,7 +119,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     @Override
     public Atendimento findById(Integer id) throws BancoDeDadosException {
         Atendimento atendimento;
-        Connection con;
+        Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -131,24 +136,28 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
             atendimento = lista.get(0);
 
-            con.close();
+            return atendimento;
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
+
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-        return atendimento;
     }
 
     @Override
     public Atendimento update(Integer id, Atendimento atendimento) throws BancoDeDadosException {
-        Connection con;
+        Connection con = null;
         try {
             Atendimento atendimentoBuscado = this.findById(id);
-
-            if (atendimentoBuscado == null) {
-                throw new EntityNotFound("Atendimento não encontrado");
-            }
 
             con = ConexaoBancoDeDados.getConnection();
 
@@ -168,27 +177,29 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
             st.setInt(index++, atendimentoBuscado.getIdAtendimento());
 
             st.execute();
-            con.close();
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
 
-        } catch (EntityNotFound e) {
-            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
         }
 
         return atendimento;
     }
 
     @Override
-    public boolean deleteById(Integer id) throws BancoDeDadosException, EntityNotFound {
-        Connection con;
+    public boolean deleteById(Integer id) throws BancoDeDadosException {
+        Connection con = null;
         try {
             Atendimento atendimento = findById(id);
-
-            if (atendimento == null) {
-                throw new EntityNotFound("Atendimento não encontrado");
-            }
 
             con = ConexaoBancoDeDados.getConnection();
 
@@ -199,15 +210,19 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
             st.setInt(1, id);
 
-            con.close();
 
             return st.execute();
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-
-        } catch (EntityNotFound e) {
-            throw new EntityNotFound(e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                throw new BancoDeDadosException(e);
+            }
         }
     }
 
