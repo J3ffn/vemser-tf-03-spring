@@ -1,5 +1,7 @@
 package br.com.dbc.wbhealth.model.dto;
 
+import br.com.dbc.wbhealth.model.entity.Pessoa;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,28 +9,29 @@ import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MedicoInputDTO {
-    @NotNull
+    @NotBlank
     private String nome;
     @NotBlank
-    private LocalDate dataDeNascimento;
-    @NotNull
-    @Size(min = 8, max = 8)
+    @Size(min =8, max=8)
     private String cep;
+    @NotNull
+    @PastOrPresent
+    private LocalDate dataNascimento;
     @CPF
     private String cpf;
-    @NotNull
+    @PositiveOrZero
+    private Double salarioMensal;
+    @Positive
     private Integer idHospital;
-    @NotEmpty
-    @Size(min= 6, max = 6)
+    @NotBlank
+    @Size(min=13, max=13)
     private String crm;
+
 }
