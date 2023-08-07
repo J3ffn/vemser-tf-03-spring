@@ -2,6 +2,7 @@ package br.com.dbc.wbhealth.controller;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.model.entity.Hospital;
+import br.com.dbc.wbhealth.service.HospitalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
