@@ -11,8 +11,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @Data
 public abstract class Pessoa {
-
-    private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Positive
     private Integer idPessoa;
@@ -35,11 +34,7 @@ public abstract class Pessoa {
     public Pessoa(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal) {
         this.nome = nome;
         this.cep = cep;
-        if (dataNascimento == ""){
-            this.dataNascimento = null;
-        }else {
-            this.dataNascimento = LocalDate.parse(dataNascimento, fmt);
-        }
+        this.dataNascimento = LocalDate.parse(dataNascimento, FORMAT);
         this.cpf = cpf;
         this.salarioMensal = salarioMensal;
     }
