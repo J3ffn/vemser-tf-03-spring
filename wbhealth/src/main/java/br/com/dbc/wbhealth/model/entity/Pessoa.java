@@ -1,17 +1,27 @@
 package br.com.dbc.wbhealth.model.entity;
 
+import org.hibernate.validator.constraints.br.CPF;
+
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public abstract class Pessoa {
 
     private static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-
+    @Positive
     private Integer idPessoa;
+    @NotBlank
     private String nome;
+    @NotBlank
+    @Size(min = 8, max = 8)
     private String cep;
+    @NotNull
+    @PastOrPresent
     private LocalDate dataNascimento;
+    @CPF
     private String cpf;
+    @PositiveOrZero
     private Double salarioMensal;
 
     public Pessoa() {

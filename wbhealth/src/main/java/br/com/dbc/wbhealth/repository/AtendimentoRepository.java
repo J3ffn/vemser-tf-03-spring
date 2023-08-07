@@ -18,6 +18,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
     @Override
     public Atendimento save(Atendimento atendimento) throws BancoDeDadosException {
         Connection con = null;
+        Atendimento atendicmentoAux = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -48,7 +49,6 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
-
         } finally {
             try {
                 if (con != null) {
@@ -210,7 +210,6 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
             st.setInt(1, id);
 
-
             return st.execute();
 
         } catch (SQLException e) {
@@ -221,7 +220,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
                     con.close();
                 }
             } catch (SQLException e) {
-                throw new BancoDeDadosException(e);
+                e.printStackTrace();
             }
         }
     }

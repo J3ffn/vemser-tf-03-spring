@@ -1,326 +1,261 @@
-//package br.com.dbc.wbhealth.repository;
-//
-//import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
-//import br.com.dbc.wbhealth.model.entity.Paciente;
-//import org.springframework.stereotype.Repository;
-//
-//import java.sql.*;
-//import java.time.LocalDate;
-//import java.time.format.DateTimeFormatter;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//@Repository
-//public class PacienteRepository implements Repositorio<Integer, Paciente> {
-//    @Override
-//    public List<Paciente> listarTodos() throws BancoDeDadosException {
-//        List<Paciente> pacientes = new ArrayList<>();
-//        Connection con = null;
-//        try {
-//            con = ConexaoBancoDeDados.getConnection();
-//            Statement st = con.createStatement();
-//
-//            String sql = "SELECT * FROM PESSOA\n" +
-//                    "INNER JOIN PACIENTE\n" +
-//                    "ON PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA";
-//
-//            ResultSet res = st.executeQuery(sql);
-//
-//            while (res.next()){
-//                Paciente paciente = obterPaciente(res);
-//                pacientes.add(paciente);
-//            }
-//
-//        }catch (SQLException e) {
-//            throw new BancoDeDadosException(e.getCause());
-//        } finally {
-//            try {
-//                if (con != null) {
-//                    con.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return pacientes;
-//    }
-//
-//    @Override
-//    public Paciente listarPeloId(Integer id) throws BancoDeDadosException {
-//        Paciente paciente = null;
-//        Connection con = null;
-//        try {
-//            con = ConexaoBancoDeDados.getConnection();
-//            String sql = "SELECT * FROM PACIENTE\n" +
-//                    "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
-//
-//            PreparedStatement st = con.prepareStatement(sql);
-//            st.setInt(1, id);
-//
-//            ResultSet res = st.executeQuery();
-//            if (res.next()){
-//                paciente = obterPaciente(res);
-//            }
-//
-//        }catch (SQLException e) {
-//            throw new BancoDeDadosException(e.getCause());
-//        } finally {
-//            try {
-//                if (con != null) {
-//                    con.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return paciente;
-//    }
-//
-//    @Override
-//    public void cadastrar(Paciente paciente) throws BancoDeDadosException {
-//        Connection con = null;
-//        try {
-//            con = ConexaoBancoDeDados.getConnection();
-//
-//            Integer proximoPessoaId = this.getProximoId(con, "seq_pessoa.nextval");
-//            paciente.setIdPessoa(proximoPessoaId);
-//
-//            String sqlPessoa = "INSERT INTO Pessoa\n" +
-//                    "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)\n" +
-//                    "VALUES(?, ?, ?, ?, ?, ?)\n";
-//
-//            PreparedStatement stPesssoa = con.prepareStatement(sqlPessoa);
-//
-//            stPesssoa.setInt(1, paciente.getIdPessoa());
-//            stPesssoa.setString(2, paciente.getNome());
-//            stPesssoa.setString(3, paciente.getCep());
-//            stPesssoa.setDate(4, Date.valueOf(paciente.getDataNascimento()));
-//            stPesssoa.setString(5, paciente.getCpf());
-//            stPesssoa.setDouble(6, paciente.getSalarioMensal());
-//
-//            int pessoasInseridas = stPesssoa.executeUpdate();
-//
-//            if (pessoasInseridas == 0) throw new SQLException("Ocorreu um erro ao inserir!");
-//
-//            Integer proximoPacienteId = this.getProximoId(con, "seq_paciente.nextval");
-//            paciente.setIdPaciente(proximoPacienteId);
-//
-//            String sql = "INSERT INTO Paciente\n" +
-//                    "(id_paciente, id_hospital, id_pessoa)\n" +
-//                    "VALUES(?, ?, ?)\n";
-//
-//            PreparedStatement stPaciente = con.prepareStatement(sql);
-//            stPaciente.setInt(1, paciente.getIdPaciente());
-//            stPaciente.setInt(2, 1);
-//            stPaciente.setInt(3, paciente.getIdPessoa());
-//
-//            int res = stPaciente.executeUpdate();
-//
-//        }catch (BancoDeDadosException e) {
-//            System.err.println("Erro ao acessar o banco de dados: ");
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            System.err.println("Erro inesperado: ");
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (con != null) {
-//                    con.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public boolean alterarPeloId(Integer id, Paciente paciente) throws BancoDeDadosException {
-//        Connection con = null;
-//        try {
-//            con = ConexaoBancoDeDados.getConnection();
-//
-//            Paciente pacienteId = this.listarPeloId(id);
-//
-//            StringBuilder sql = new StringBuilder();
-//            sql.append("UPDATE PESSOA SET \n");
-//
-//            List<String> camposAtualizados = new ArrayList<>();
-//            if (paciente != null) {
-//                if (paciente.getNome() != null) {
-//                    camposAtualizados.add("nome = ?");
-//                }
-//                if (paciente.getCep() != null) {
-//                    camposAtualizados.add("cep = ?");
-//                }
-//                if (paciente.getDataNascimento() != null) {
-//                    camposAtualizados.add("data_nascimento = ?");
-//                }
-//                if (paciente.getCpf() != null) {
-//                    camposAtualizados.add("cpf = ?");
-//                }
-//                if (paciente.getSalarioMensal() != null) {
-//                    camposAtualizados.add("salario_mensal = ?");
-//                }
-//            }
-//
-//            if (!camposAtualizados.isEmpty()) {
-//                sql.append(String.join(", ", camposAtualizados));
-//                sql.append(" WHERE id_pessoa = ?");
-//
-//                PreparedStatement st = con.prepareStatement(sql.toString());
-//
-//                int index = 1;
-//                if (paciente != null) {
-//                    if (paciente.getNome() != null) {
-//                        st.setString(index++, paciente.getNome());
-//                    }
-//                    if (paciente.getCep() != null) {
-//                        st.setString(index++, paciente.getCep());
-//                    }
-//                    if (paciente.getDataNascimento() != null) {
-//                        st.setDate(index++, Date.valueOf(paciente.getDataNascimento()));
-//                    }
-//                    if (paciente.getCpf() != null) {
-//                        st.setString(index++, paciente.getCpf());
-//                    }
-//                    if (paciente.getSalarioMensal() != null) {
-//                        st.setDouble(index++, paciente.getSalarioMensal());
-//                    }
-//                }
-//
-//                st.setInt(index++, pacienteId.getIdPessoa());
-//
-//                int res = st.executeUpdate();
-//
-//                return res > 0;
-//            } else {
-//                System.err.println("Nenhum campo para atualizar.");
-//                return false;
-//            }
-//        } catch (SQLException e) {
-//            throw new BancoDeDadosException(e.getCause());
-//        } finally {
-//            try {
-//                if (con != null) {
-//                    con.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public boolean deletarPeloId(Integer id) throws BancoDeDadosException {
-//        Connection con = null;
-//        try {
-//            con = ConexaoBancoDeDados.getConnection();
-//
-//            Paciente paciente = listarPeloId(id);
-//
-//            String sql = "DELETE FROM PACIENTE WHERE ID_PACIENTE = ?";
-//
-//            PreparedStatement stPaciente = con.prepareStatement(sql);
-//
-//            stPaciente.setInt(1, id);
-//
-//            int resPaciente = stPaciente.executeUpdate();
-//            int resPessoa = 0;
-//            if (resPaciente > 0){
-//                String sqlPessoa = "DELETE FROM PESSOA WHERE ID_PESSOA = ?";
-//                PreparedStatement stPessoa = con.prepareStatement(sqlPessoa);
-//                stPessoa.setInt(1, paciente.getIdPessoa());
-//                resPessoa =stPessoa.executeUpdate();
-//            }else {
-//                throw new SQLException("Ocorreu um erro na operação");
-//            }
-//
-//            return resPessoa > 0;
-//        }catch (SQLException e) {
-//            throw new BancoDeDadosException(e.getCause());
-//        } finally {
-//            try {
-//                if (con != null) {
-//                    con.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public Integer getProximoId(Connection connection, String nextSequence) throws SQLException {
-//        try {
-//            String sql = "SELECT " + nextSequence + " mysequence from DUAL";
-//            Statement stmt = connection.createStatement();
-//            ResultSet res = stmt.executeQuery(sql);
-//
-//            if (res.next()) {
-//                return res.getInt("mysequence");
-//            }
-//
-//            return null;
-//        } catch (SQLException e) {
-//            throw new BancoDeDadosException(e.getCause());
-//        }
-//    }
-//
-//    public boolean buscarCpf(Paciente paciente){
-//        Connection con = null;
-//        boolean retorno = false;
-//        try {
-//            con = ConexaoBancoDeDados.getConnection();
-//            String sql = "SELECT * FROM Pessoa " +
-//                    "WHERE cpf = ?";
-//
-//            PreparedStatement st = con.prepareStatement(sql);
-//
-//            st.setString(1, paciente.getCpf());
-//
-//            ResultSet rs = st.executeQuery();
-//
-//            if (rs.next()){
-//                retorno = true;
-//            }
-//
-//        }catch (SQLException e){
-//            e.printStackTrace();
-//        }finally {
-//            try {
-//                if (con != null) {
-//                    con.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        return retorno;
-//    }
-//
-//    @Override
-//    public Paciente buscarId(Integer id) throws BancoDeDadosException {
-//        return this.listarPeloId(id);
-//    }
-//
-//    private Paciente obterPaciente(ResultSet res) throws SQLException {
-//        Integer idPessoa = res.getInt("id_pessoa");
-//        String nome = res.getString("nome");
-//        String cep = res.getString("cep");
-//        LocalDate data = res.getDate("data_nascimento").toLocalDate();
-//        String cpf = res.getString("cpf");
-//        Double salarioMensal = res.getDouble("salario_mensal");
-//        Integer idPaciente = res.getInt("id_paciente");
-//        Integer id_hospital = res.getInt("id_hospital");
-//
-//        String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-//
-//        Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf, salarioMensal, id_hospital);
-//
-//        paciente.setIdPessoa(idPessoa);
-//        paciente.setIdPaciente(idPaciente);
-//
-//        return paciente;
-//    }
-//}
+package br.com.dbc.wbhealth.repository;
+
+import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.model.entity.Paciente;
+import br.com.dbc.wbhealth.repository.Repositorio;
+import org.springframework.stereotype.Repository;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+@Repository
+public class PacienteRepository implements Repositorio<Integer, Paciente> {
+    @Override
+    public List<Paciente> findAll() throws BancoDeDadosException {
+        List<Paciente> listaPacientes = new ArrayList<>();
+        Connection conexao = null;
+
+        try {
+            conexao = ConexaoBancoDeDados.getConnection();
+            final String QUERY_SQL = "SELECT * FROM PESSOA\n"
+                                    + "INNER JOIN PACIENTE\n"
+                                    + "ON PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA";
+            Statement statement = conexao.createStatement();
+            ResultSet resultSet = statement.executeQuery(QUERY_SQL);
+
+            while (resultSet.next()){
+                Paciente paciente = getPacienteFromResultSet(resultSet);
+                listaPacientes.add(paciente);
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            fecharConexaoComBancoDeDados(conexao);
+        }
+
+        return listaPacientes;
+    }
+
+    @Override
+    public Paciente findById(Integer idPaciente) throws BancoDeDadosException {
+        Paciente paciente = null;
+        Connection conexao = null;
+
+        try {
+            conexao = ConexaoBancoDeDados.getConnection();
+            final String QUERY_SQL = "SELECT * FROM PACIENTE\n"
+                                    + "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? "
+                                    + "AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
+            PreparedStatement statement = conexao.prepareStatement(QUERY_SQL);
+            statement.executeQuery(QUERY_SQL);
+            statement.setInt(1, idPaciente);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()){
+                paciente = getPacienteFromResultSet(resultSet);
+            }
+
+        }catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            fecharConexaoComBancoDeDados(conexao);
+        }
+        return paciente;
+    }
+
+    @Override
+    public Paciente save(Paciente paciente) throws BancoDeDadosException {
+        Paciente novoPaciente;
+        Connection conexao = null;
+
+        try {
+            conexao = ConexaoBancoDeDados.getConnection();
+
+            final String QUERY_PESSOA = "INSERT INTO PESSOA\n"
+                    + "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)\n"
+                    + "VALUES(?, ?, ?, ?, ?, ?)\n";
+            inserirNaTabelaPessoa(paciente, conexao, QUERY_PESSOA);
+
+            final String QUERY_PACIENTE = "INSERT INTO PACIENTE\n"
+                                        + "(id_paciente, id_hospital, id_pessoa)\n"
+                                        + "VALUES(?, ?, ?)\n";
+            inserirNaTabelaPaciente(paciente, conexao, QUERY_PACIENTE);
+
+            novoPaciente = findById(paciente.getIdPaciente());
+
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            fecharConexaoComBancoDeDados(conexao);
+        }
+
+        return novoPaciente;
+    }
+
+    @Override
+    public Paciente update(Integer idPaciente, Paciente pacienteModificado) throws BancoDeDadosException {
+        Paciente pacienteAtualizado = null;
+        Connection conexao = null;
+
+        try {
+            pacienteAtualizado = findById(idPaciente);
+            conexao = ConexaoBancoDeDados.getConnection();
+            final String UPDATE_QUERY = "UPDATE PESSOA SET \n"
+                                        + "nome = ?, "
+                                        + "cep = ?, "
+                                        + "data_nascimento = ?, "
+                                        + "cpf = ?, "
+                                        + "salario_mensal = ? "
+                                        + "WHERE id_pessoa = ?";
+
+            PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);
+            preparedStatement.setString(1, pacienteModificado.getNome());
+            preparedStatement.setString(2, pacienteModificado.getCep());
+            preparedStatement.setDate(3, Date.valueOf(pacienteModificado.getDataNascimento()));
+            preparedStatement.setString(4, pacienteModificado.getCpf());
+            preparedStatement.setDouble(5, pacienteModificado.getSalarioMensal());
+            preparedStatement.setInt(6, pacienteAtualizado.getIdPessoa());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            fecharConexaoComBancoDeDados(conexao);
+        }
+
+        return pacienteAtualizado;
+    }
+
+    @Override
+    public boolean deleteById(Integer idPaciente) throws BancoDeDadosException {
+        Connection conexao = null;
+        try {
+            Paciente deletarPaciente = findById(idPaciente);
+            conexao = ConexaoBancoDeDados.getConnection();
+
+            final String PACIENTE_QUERY = "DELETE FROM PACIENTE WHERE ID_PACIENTE = ?";
+            PreparedStatement stPaciente = conexao.prepareStatement(PACIENTE_QUERY);
+            stPaciente.setInt(1, idPaciente);
+            int resPaciente = stPaciente.executeUpdate();
+            if(resPaciente == 0)
+                return false;
+
+            final String PESSOA_QUERY = "DELETE FROM PESSOA WHERE ID_PESSOA = ?";
+            PreparedStatement stPessoa = conexao.prepareStatement(PESSOA_QUERY);
+            stPessoa.setInt(1, deletarPaciente.getIdPessoa());
+            int resPessoa = stPessoa.executeUpdate();
+
+            return resPessoa > 0;
+        }catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            fecharConexaoComBancoDeDados(conexao);
+        }
+    }
+
+    @Override
+    public Integer getProximoId(Connection connection, String nextSequence) throws SQLException {
+        try {
+            String sql = "SELECT " + nextSequence + " mysequence from DUAL";
+            Statement stmt = connection.createStatement();
+            ResultSet res = stmt.executeQuery(sql);
+
+            if (res.next()) {
+                return res.getInt("mysequence");
+            }
+
+            return null;
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        }
+    }
+
+    public boolean buscarCpf(Paciente paciente) throws BancoDeDadosException {
+        Connection conexao = null;
+        boolean retorno = false;
+
+        try {
+            conexao = ConexaoBancoDeDados.getConnection();
+            final String QUERY = "SELECT * FROM PESSOA "
+                                + "WHERE cpf = ?";
+
+            PreparedStatement preparedStatement = conexao.prepareStatement(QUERY);
+            preparedStatement.setString(1, paciente.getCpf());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                retorno = true;
+            }
+
+        }catch (SQLException e){
+            throw new BancoDeDadosException(e.getCause());
+        }finally {
+            fecharConexaoComBancoDeDados(conexao);
+        }
+
+        return retorno;
+    }
+
+    private Paciente getPacienteFromResultSet(ResultSet resultSet) throws SQLException {
+        Integer idPessoa = resultSet.getInt("id_pessoa");
+        String nome = resultSet.getString("nome");
+        String cep = resultSet.getString("cep");
+        LocalDate data = resultSet.getDate("data_nascimento").toLocalDate();
+        String cpf = resultSet.getString("cpf");
+        Double salarioMensal = resultSet.getDouble("salario_mensal");
+        Integer idPaciente = resultSet.getInt("id_paciente");
+        Integer idHospital = resultSet.getInt("id_hospital");
+
+        String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+        Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf, salarioMensal, idHospital);
+
+        paciente.setIdPessoa(idPessoa);
+        paciente.setIdPaciente(idPaciente);
+
+        return paciente;
+    }
+
+    private void fecharConexaoComBancoDeDados(Connection conexao) throws BancoDeDadosException {
+        try{
+            if(conexao != null){
+                conexao.close();
+            }
+        }catch (SQLException e){
+            throw new BancoDeDadosException(e.getCause());
+        }
+    }
+
+    private void inserirNaTabelaPessoa(Paciente paciente, Connection conexao, String query) throws SQLException {
+        Integer idPessoa = this.getProximoId(conexao, "seq_pessoa.nextval");
+        paciente.setIdPessoa(idPessoa);
+
+        PreparedStatement stPesssoa = conexao.prepareStatement(query);
+        stPesssoa.setInt(1, paciente.getIdPessoa());
+        stPesssoa.setString(2, paciente.getNome());
+        stPesssoa.setString(3, paciente.getCep());
+        stPesssoa.setDate(4, Date.valueOf(paciente.getDataNascimento()));
+        stPesssoa.setString(5, paciente.getCpf());
+        stPesssoa.setDouble(6, paciente.getSalarioMensal());
+
+        stPesssoa.executeUpdate();
+    }
+
+    private void inserirNaTabelaPaciente(Paciente paciente, Connection conexao, String query) throws SQLException {
+        Integer proximoPacienteId = this.getProximoId(conexao, "seq_paciente.nextval");
+        paciente.setIdPaciente(proximoPacienteId);
+
+        PreparedStatement stPaciente = conexao.prepareStatement(query);
+        stPaciente.setInt(1, paciente.getIdPaciente());
+        stPaciente.setInt(2, 1);
+        stPaciente.setInt(3, paciente.getIdPessoa());
+
+        stPaciente.executeUpdate();
+    }
+
+}

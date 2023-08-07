@@ -29,7 +29,7 @@ public class AtendimentoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AtendimentoOutputDTO>> list() throws BancoDeDadosException {
+    public ResponseEntity<List<AtendimentoOutputDTO>> findAll() throws BancoDeDadosException {
         return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.findAll());
     }
 
