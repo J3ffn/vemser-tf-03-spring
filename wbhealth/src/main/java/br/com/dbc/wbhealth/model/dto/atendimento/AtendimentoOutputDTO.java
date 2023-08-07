@@ -1,6 +1,5 @@
-package br.com.dbc.wbhealth.model.dto.output;
+package br.com.dbc.wbhealth.model.dto.atendimento;
 
-import br.com.dbc.wbhealth.model.dto.input.AtendimentoInputDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package br.com.dbc.wbhealth.model.dto.input;
+package br.com.dbc.wbhealth.model.dto.atendimento;
 
 import br.com.dbc.wbhealth.model.enumarator.TipoDeAtendimento;
 import lombok.AllArgsConstructor;
