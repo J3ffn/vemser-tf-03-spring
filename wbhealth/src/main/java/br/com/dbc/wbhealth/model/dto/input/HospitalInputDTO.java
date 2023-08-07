@@ -1,4 +1,4 @@
-package br.com.dbc.wbhealth.model.dto;
+package br.com.dbc.wbhealth.model.dto.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

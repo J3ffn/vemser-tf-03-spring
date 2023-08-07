@@ -1,6 +1,9 @@
 package br.com.dbc.wbhealth.controller;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
+import br.com.dbc.wbhealth.model.dto.input.AtendimentoInputDTO;
+import br.com.dbc.wbhealth.model.dto.output.AtendimentoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.service.AtendimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,33 +29,34 @@ public class AtendimentoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Atendimento>> findAll() throws BancoDeDadosException {
+    public ResponseEntity<List<AtendimentoOutputDTO>> findAll() throws BancoDeDadosException {
         return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<Atendimento> save(@Valid @RequestBody Atendimento novoAtendimento) throws BancoDeDadosException {
+    public ResponseEntity<AtendimentoOutputDTO> save(@Valid @RequestBody AtendimentoInputDTO novoAtendimento) throws BancoDeDadosException {
         return ResponseEntity.status(HttpStatus.CREATED).body(atendimentoService.save(novoAtendimento));
     }
 
     @GetMapping("/{idAtendimento}")
-    public ResponseEntity<Atendimento> findById(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento) throws BancoDeDadosException {
-        return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.getAtendimentoPeloId(idAtendimento));
+    public ResponseEntity<AtendimentoOutputDTO> buscarAtendimentoPeloId(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento) throws BancoDeDadosException {
+        return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.findById(idAtendimento));
     }
 
     @GetMapping("/paciente/{idPaciente}")
-    public ResponseEntity<List<Atendimento>> findByIdUsuario(@Positive(message = "Deve ser positivo") @PathVariable Integer idPaciente) throws BancoDeDadosException {
-        return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.findByIdPaciente(idPaciente));
+    public ResponseEntity<List<AtendimentoOutputDTO>> bucarAtendimentoPeloIdUsuario(@Positive(message = "Deve ser positivo") @PathVariable Integer idPaciente) throws BancoDeDadosException {
+        return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.bucarAtendimentoPeloIdUsuario(idPaciente));
     }
 
     @PutMapping("/{idAtendimento}")
-    public ResponseEntity<Atendimento> update(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento, @Valid @RequestBody Atendimento atendimento) throws BancoDeDadosException {
+    public ResponseEntity<AtendimentoOutputDTO> alterarPeloId(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento,
+                                                              @Valid @RequestBody AtendimentoInputDTO atendimento) throws BancoDeDadosException {
         return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.update(idAtendimento, atendimento));
     }
 
     @DeleteMapping("/{idAtendimento}")
-    public ResponseEntity<Void> deleteById(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento) {
-        atendimentoService.deleteById(idAtendimento);
+    public ResponseEntity<Void> deletarAtendimento(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento) throws EntityNotFound {
+        atendimentoService.deletarPeloId(idAtendimento);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

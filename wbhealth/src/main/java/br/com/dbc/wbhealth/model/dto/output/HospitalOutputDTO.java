@@ -1,9 +1,9 @@
-package br.com.dbc.wbhealth.model.dto;
+package br.com.dbc.wbhealth.model.dto.output;
 
+import br.com.dbc.wbhealth.model.dto.input.HospitalInputDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;

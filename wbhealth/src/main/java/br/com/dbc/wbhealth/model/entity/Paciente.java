@@ -1,10 +1,13 @@
 package br.com.dbc.wbhealth.model.entity;
 
+import javax.validation.constraints.Positive;
 import java.time.format.DateTimeFormatter;
 
 public class Paciente extends Pessoa {
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    @Positive
     private Integer idPaciente;
+    @Positive
     private Integer idHospital;
 
     public Paciente() {

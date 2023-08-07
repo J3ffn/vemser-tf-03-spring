@@ -31,11 +31,6 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
         }
     }
 
-//    @Override
-//    public Medico buscarId(Integer id) throws BancoDeDadosException {
-//        return this.listarPeloId(id);
-//    }
-
     @Override
     public Medico save(Medico medico) throws BancoDeDadosException {
         Connection con = null;

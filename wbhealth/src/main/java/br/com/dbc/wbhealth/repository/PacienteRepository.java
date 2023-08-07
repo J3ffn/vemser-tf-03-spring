@@ -2,6 +2,7 @@ package br.com.dbc.wbhealth.repository;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.model.entity.Paciente;
+import br.com.dbc.wbhealth.repository.Repositorio;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -26,7 +27,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             ResultSet resultSet = statement.executeQuery(QUERY_SQL);
 
             while (resultSet.next()){
-                Paciente paciente = obterPaciente(resultSet);
+                Paciente paciente = getPacienteFromResultSet(resultSet);
                 listaPacientes.add(paciente);
             }
         } catch (SQLException e) {
@@ -51,10 +52,10 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             PreparedStatement statement = conexao.prepareStatement(QUERY_SQL);
             statement.executeQuery(QUERY_SQL);
             statement.setInt(1, idPaciente);
-            ResultSet result = statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
 
-            if (result.next()){
-                paciente = obterPaciente(result);
+            if (resultSet.next()){
+                paciente = getPacienteFromResultSet(resultSet);
             }
 
         }catch (SQLException e) {
@@ -67,6 +68,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
 
     @Override
     public Paciente save(Paciente paciente) throws BancoDeDadosException {
+        Paciente novoPaciente;
         Connection conexao = null;
 
         try {
@@ -82,122 +84,76 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                                         + "VALUES(?, ?, ?)\n";
             inserirNaTabelaPaciente(paciente, conexao, QUERY_PACIENTE);
 
+            novoPaciente = findById(paciente.getIdPaciente());
+
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             fecharConexaoComBancoDeDados(conexao);
         }
 
-        return findById(paciente.getIdPaciente());
+        return novoPaciente;
     }
 
     @Override
     public Paciente update(Integer idPaciente, Paciente pacienteModificado) throws BancoDeDadosException {
+        Paciente pacienteAtualizado = null;
         Connection conexao = null;
 
         try {
+            pacienteAtualizado = findById(idPaciente);
             conexao = ConexaoBancoDeDados.getConnection();
+            final String UPDATE_QUERY = "UPDATE PESSOA SET \n"
+                                        + "nome = ?, "
+                                        + "cep = ?, "
+                                        + "data_nascimento = ?, "
+                                        + "cpf = ?, "
+                                        + "salario_mensal = ? "
+                                        + "WHERE id_pessoa = ?";
 
-            Paciente pacienteAtualizado = findById(idPaciente);
+            PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);
+            preparedStatement.setString(1, pacienteModificado.getNome());
+            preparedStatement.setString(2, pacienteModificado.getCep());
+            preparedStatement.setDate(3, Date.valueOf(pacienteModificado.getDataNascimento()));
+            preparedStatement.setString(4, pacienteModificado.getCpf());
+            preparedStatement.setDouble(5, pacienteModificado.getSalarioMensal());
+            preparedStatement.setInt(6, pacienteAtualizado.getIdPessoa());
 
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE PESSOA SET \n");
+            preparedStatement.executeUpdate();
 
-            List<String> camposAtualizados = new ArrayList<>();
-            if (pacienteModificado != null) {
-                if (pacienteModificado.getNome() != null) {
-                    camposAtualizados.add("nome = ?");
-                }
-                if (pacienteModificado.getCep() != null) {
-                    camposAtualizados.add("cep = ?");
-                }
-                if (pacienteModificado.getDataNascimento() != null) {
-                    camposAtualizados.add("data_nascimento = ?");
-                }
-                if (pacienteModificado.getCpf() != null) {
-                    camposAtualizados.add("cpf = ?");
-                }
-                if (pacienteModificado.getSalarioMensal() != null) {
-                    camposAtualizados.add("salario_mensal = ?");
-                }
-            }
-
-            if(camposAtualizados.isEmpty()){
-                return null;
-            }
-
-            sql.append(String.join(", ", camposAtualizados));
-            sql.append(" WHERE id_pessoa = ?");
-
-            PreparedStatement st = conexao.prepareStatement(sql.toString());
-
-            int index = 1;
-            if (pacienteModificado != null) {
-                if (pacienteModificado.getNome() != null) {
-                    st.setString(index++, pacienteModificado.getNome());
-                }
-                if (pacienteModificado.getCep() != null) {
-                    st.setString(index++, pacienteModificado.getCep());
-                }
-                if (pacienteModificado.getDataNascimento() != null) {
-                    st.setDate(index++, Date.valueOf(pacienteModificado.getDataNascimento()));
-                }
-                if (pacienteModificado.getCpf() != null) {
-                    st.setString(index++, pacienteModificado.getCpf());
-                }
-                if (pacienteModificado.getSalarioMensal() != null) {
-                    st.setDouble(index++, pacienteModificado.getSalarioMensal());
-                }
-            }
-
-            st.setInt(index++, pacienteAtualizado.getIdPessoa());
-
-            int res = st.executeUpdate();
-
-            return pacienteAtualizado;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             fecharConexaoComBancoDeDados(conexao);
         }
+
+        return pacienteAtualizado;
     }
 
     @Override
-    public boolean deleteById(Integer id) throws BancoDeDadosException {
-        Connection con = null;
+    public boolean deleteById(Integer idPaciente) throws BancoDeDadosException {
+        Connection conexao = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            Paciente deletarPaciente = findById(idPaciente);
+            conexao = ConexaoBancoDeDados.getConnection();
 
-            Paciente paciente = findById(id);
-
-            String sql = "DELETE FROM PACIENTE WHERE ID_PACIENTE = ?";
-
-            PreparedStatement stPaciente = con.prepareStatement(sql);
-
-            stPaciente.setInt(1, id);
-
+            final String PACIENTE_QUERY = "DELETE FROM PACIENTE WHERE ID_PACIENTE = ?";
+            PreparedStatement stPaciente = conexao.prepareStatement(PACIENTE_QUERY);
+            stPaciente.setInt(1, idPaciente);
             int resPaciente = stPaciente.executeUpdate();
-            int resPessoa = 0;
-            if (resPaciente > 0){
-                String sqlPessoa = "DELETE FROM PESSOA WHERE ID_PESSOA = ?";
-                PreparedStatement stPessoa = con.prepareStatement(sqlPessoa);
-                stPessoa.setInt(1, paciente.getIdPessoa());
-                resPessoa =stPessoa.executeUpdate();
-            }else {
-                throw new SQLException("Ocorreu um erro na operação");
-            }
+            if(resPaciente == 0)
+                return false;
+
+            final String PESSOA_QUERY = "DELETE FROM PESSOA WHERE ID_PESSOA = ?";
+            PreparedStatement stPessoa = conexao.prepareStatement(PESSOA_QUERY);
+            stPessoa.setInt(1, deletarPaciente.getIdPessoa());
+            int resPessoa = stPessoa.executeUpdate();
 
             return resPessoa > 0;
         }catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            fecharConexaoComBancoDeDados(conexao);
         }
     }
 
@@ -218,52 +174,46 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         }
     }
 
-    public boolean buscarCpf(Paciente paciente){
-        Connection con = null;
+    public boolean buscarCpf(Paciente paciente) throws BancoDeDadosException {
+        Connection conexao = null;
         boolean retorno = false;
+
         try {
-            con = ConexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM Pessoa " +
-                    "WHERE cpf = ?";
+            conexao = ConexaoBancoDeDados.getConnection();
+            final String QUERY = "SELECT * FROM PESSOA "
+                                + "WHERE cpf = ?";
 
-            PreparedStatement st = con.prepareStatement(sql);
+            PreparedStatement preparedStatement = conexao.prepareStatement(QUERY);
+            preparedStatement.setString(1, paciente.getCpf());
 
-            st.setString(1, paciente.getCpf());
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            ResultSet rs = st.executeQuery();
-
-            if (rs.next()){
+            if(resultSet.next()){
                 retorno = true;
             }
 
         }catch (SQLException e){
-            e.printStackTrace();
+            throw new BancoDeDadosException(e.getCause());
         }finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            fecharConexaoComBancoDeDados(conexao);
         }
 
         return retorno;
     }
 
-    private Paciente obterPaciente(ResultSet res) throws SQLException {
-        Integer idPessoa = res.getInt("id_pessoa");
-        String nome = res.getString("nome");
-        String cep = res.getString("cep");
-        LocalDate data = res.getDate("data_nascimento").toLocalDate();
-        String cpf = res.getString("cpf");
-        Double salarioMensal = res.getDouble("salario_mensal");
-        Integer idPaciente = res.getInt("id_paciente");
-        Integer id_hospital = res.getInt("id_hospital");
+    private Paciente getPacienteFromResultSet(ResultSet resultSet) throws SQLException {
+        Integer idPessoa = resultSet.getInt("id_pessoa");
+        String nome = resultSet.getString("nome");
+        String cep = resultSet.getString("cep");
+        LocalDate data = resultSet.getDate("data_nascimento").toLocalDate();
+        String cpf = resultSet.getString("cpf");
+        Double salarioMensal = resultSet.getDouble("salario_mensal");
+        Integer idPaciente = resultSet.getInt("id_paciente");
+        Integer idHospital = resultSet.getInt("id_hospital");
 
         String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-        Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf, salarioMensal, id_hospital);
+        Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf, salarioMensal, idHospital);
 
         paciente.setIdPessoa(idPessoa);
         paciente.setIdPaciente(idPaciente);
@@ -293,10 +243,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         stPesssoa.setString(5, paciente.getCpf());
         stPesssoa.setDouble(6, paciente.getSalarioMensal());
 
-        int pessoasInseridas = stPesssoa.executeUpdate();
-
-        if (pessoasInseridas == 0)
-            throw new SQLException("Ocorreu um erro ao inserir!");
+        stPesssoa.executeUpdate();
     }
 
     private void inserirNaTabelaPaciente(Paciente paciente, Connection conexao, String query) throws SQLException {
@@ -308,7 +255,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         stPaciente.setInt(2, 1);
         stPaciente.setInt(3, paciente.getIdPessoa());
 
-        int res = stPaciente.executeUpdate();
+        stPaciente.executeUpdate();
     }
 
 }
