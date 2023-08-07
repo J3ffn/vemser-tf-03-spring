@@ -1,16 +1,30 @@
 package br.com.dbc.wbhealth.model.entity;
 
 import br.com.dbc.wbhealth.model.Pagamento;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
+
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Medico extends Pessoa implements Pagamento {
-
+    @Positive
     private Integer idPessoa;
+    @Positive
     private Integer idHospital;
+    @Positive
     private Integer idMedico;
+    @NotBlank
+    @Size(min=13, max=13)
     private String crm;
 
-    public Medico() {
-    }
 
     public Medico(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, Integer idHospital, String crm) {
         super(nome, cep, dataNascimento, cpf, salarioMensal);
@@ -50,21 +64,5 @@ public class Medico extends Pessoa implements Pagamento {
     @Override
     public void setIdPessoa(Integer idPessoa) {
         this.idPessoa = idPessoa;
-    }
-
-    public Integer getIdHospital() {
-        return idHospital;
-    }
-
-    public void setIdHospital(Integer idHospital) {
-        this.idHospital = idHospital;
-    }
-
-    public Integer getIdMedico() {
-        return idMedico;
-    }
-
-    public void setIdMedico(Integer idMedico) {
-        this.idMedico = idMedico;
     }
 }
