@@ -31,11 +31,6 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
         }
     }
 
-//    @Override
-//    public Medico buscarId(Integer id) throws BancoDeDadosException {
-//        return this.listarPeloId(id);
-//    }
-
     @Override
     public Medico save(Medico medico) throws BancoDeDadosException {
         Connection con = null;
@@ -81,8 +76,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             medicoAtualizado = findById(proximoMedicoId);
 
         }catch (BancoDeDadosException e) {
-            System.err.println("Erro ao acessar o banco de dados:");
-            e.printStackTrace();
+            e.getLocalizedMessage();
         } catch (Exception e) {
             System.err.println("Erro inesperado:");
             e.printStackTrace();
