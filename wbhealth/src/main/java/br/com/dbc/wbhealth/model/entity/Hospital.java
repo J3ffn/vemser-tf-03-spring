@@ -12,6 +12,7 @@ import javax.validation.constraints.*;
 public class Hospital {
 
     @Positive
+    @NotNull
     private Integer idHospital;
 
     @NotBlank

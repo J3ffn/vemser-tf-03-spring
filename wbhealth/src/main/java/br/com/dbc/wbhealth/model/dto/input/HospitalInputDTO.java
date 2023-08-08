@@ -1,4 +1,4 @@
-package br.com.dbc.wbhealth.model.dto;
+package br.com.dbc.wbhealth.model.dto.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HospitalnputDTO {
+public class HospitalInputDTO {
 
     @NotBlank
     @Size(max = 50)

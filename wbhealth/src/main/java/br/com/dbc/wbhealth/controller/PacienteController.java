@@ -1,7 +1,9 @@
 package br.com.dbc.wbhealth.controller;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
-import br.com.dbc.wbhealth.model.entity.Paciente;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
+import br.com.dbc.wbhealth.model.dto.paciente.PacienteInputDTO;
+import br.com.dbc.wbhealth.model.dto.paciente.PacienteOutputDTO;
 import br.com.dbc.wbhealth.service.PacienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,34 +25,35 @@ public class PacienteController {
     }
 
     @GetMapping
-    public List<Paciente> findAll() throws BancoDeDadosException {
+    public List<PacienteOutputDTO> findAll() throws BancoDeDadosException {
         return pacienteService.findAll();
     }
 
     @GetMapping("/")
-    public ResponseEntity<Paciente> findById(@RequestParam("idPaciente") @Positive Integer idPaciente)
-            throws BancoDeDadosException {
-        Paciente pacienteEncontrado = pacienteService.findById(idPaciente);
+    public ResponseEntity<PacienteOutputDTO> findById(@RequestParam("idPaciente") @Positive Integer idPaciente)
+            throws BancoDeDadosException, EntityNotFound {
+        PacienteOutputDTO pacienteEncontrado = pacienteService.findById(idPaciente);
         return new ResponseEntity<>(pacienteEncontrado, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Paciente> save(@RequestBody @Valid Paciente paciente)
+    public ResponseEntity<PacienteOutputDTO> save(@RequestBody @Valid PacienteInputDTO paciente)
             throws BancoDeDadosException {
-        Paciente novoPaciente = pacienteService.save(paciente);
-        return new ResponseEntity<>(novoPaciente, HttpStatus.OK);
+        PacienteOutputDTO pacienteCriado = pacienteService.save(paciente);
+        return new ResponseEntity<>(pacienteCriado, HttpStatus.OK);
     }
 
     @PutMapping("/{idPaciente}")
-    public ResponseEntity<Paciente> update(@PathVariable @Positive Integer idPaciente,
-                                           @RequestBody @Valid Paciente paciente)
-            throws BancoDeDadosException {
-        Paciente pacienteAtualizado =  pacienteService.update(idPaciente, paciente);
+    public ResponseEntity<PacienteOutputDTO> update(@PathVariable @Positive Integer idPaciente,
+                                                    @RequestBody @Valid PacienteInputDTO paciente)
+            throws BancoDeDadosException, EntityNotFound {
+        PacienteOutputDTO pacienteAtualizado = pacienteService.update(idPaciente, paciente);
         return new ResponseEntity<>(pacienteAtualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idPaciente}")
-    public ResponseEntity<Void> delete(@PathVariable @Positive Integer idPaciente) throws BancoDeDadosException {
+    public ResponseEntity<Void> delete(@PathVariable @Positive Integer idPaciente)
+            throws BancoDeDadosException, EntityNotFound {
         pacienteService.deleteById(idPaciente);
         return ResponseEntity.ok().build();
     }
