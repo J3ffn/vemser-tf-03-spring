@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 public class HospitalInputDTO {
 
     @NotBlank
-    @Size(max = 50)
-    @Schema(description = "Nome do medico", example = "Hospital Santa Maria", required = true)
+    @Size(min = 2, max = 50)
+    @Schema(description = "Nome do Hospital", example = "Hospital Santa Maria", required = true)
     private String nome;
 }

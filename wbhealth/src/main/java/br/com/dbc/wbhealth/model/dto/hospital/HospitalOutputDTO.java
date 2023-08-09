@@ -15,6 +15,6 @@ public class HospitalOutputDTO extends HospitalInputDTO {
 
     @Positive
     @NotNull
-    @Schema(description = "Id do Hospital", required = true)
+    @Schema(description = "Id do Hospital", example = "6", required = true)
     private Integer idHospital;
 }
