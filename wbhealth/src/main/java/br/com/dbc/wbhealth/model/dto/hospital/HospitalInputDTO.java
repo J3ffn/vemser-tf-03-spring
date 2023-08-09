@@ -1,5 +1,6 @@
-package br.com.dbc.wbhealth.model.dto.input;
+package br.com.dbc.wbhealth.model.dto.hospital;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,6 @@ public class HospitalInputDTO {
 
     @NotBlank
     @Size(max = 50)
+    @Schema(description = "Nome do medico", example = "Hospital Santa Maria", required = true)
     private String nome;
 }

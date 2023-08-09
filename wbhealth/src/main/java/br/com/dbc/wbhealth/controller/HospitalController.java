@@ -1,7 +1,7 @@
 package br.com.dbc.wbhealth.controller;
 
-import br.com.dbc.wbhealth.model.dto.output.HospitalOutputDTO;
-import br.com.dbc.wbhealth.model.dto.input.HospitalInputDTO;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalOutputDTO;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalInputDTO;
 import br.com.dbc.wbhealth.service.HospitalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

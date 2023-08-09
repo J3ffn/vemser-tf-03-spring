@@ -2,8 +2,8 @@ package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.NegocioException;
-import br.com.dbc.wbhealth.model.dto.output.HospitalOutputDTO;
-import br.com.dbc.wbhealth.model.dto.input.HospitalInputDTO;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalOutputDTO;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalInputDTO;
 import br.com.dbc.wbhealth.model.entity.Hospital;
 import br.com.dbc.wbhealth.repository.HospitalRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
