@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.repository;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import org.springframework.stereotype.Repository;
 
@@ -32,13 +33,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public Medico buscarId(Integer id) throws BancoDeDadosException {
-        return this.listarPeloId(id);
-    }
-
-    @Override
-    public void cadastrar(Medico medico) throws BancoDeDadosException {
+    public Medico save(Medico medico) throws BancoDeDadosException {
         Connection con = null;
+        Medico medicoAtualizado= new Medico();
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -46,7 +43,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             medico.setIdPessoa(proximoPessoaId);
 
             String sqlPessoa = "INSERT INTO Pessoa\n" +
-                    "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)\n" +
+                    "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stPesssoa = con.prepareStatement(sqlPessoa);
@@ -57,6 +54,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             stPesssoa.setDate(4, Date.valueOf(medico.getDataNascimento()));
             stPesssoa.setString(5, medico.getCpf());
             stPesssoa.setDouble(6, medico.getSalarioMensal());
+            stPesssoa.setString(7, medico.getEmail());
 
 
             int pessoasInseridas = stPesssoa.executeUpdate();
@@ -77,11 +75,10 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             stMedico.setString(4, medico.getCrm());
 
             int res = stMedico.executeUpdate();
-
+            medicoAtualizado = findById(proximoMedicoId);
 
         }catch (BancoDeDadosException e) {
-            System.err.println("Erro ao acessar o banco de dados:");
-            e.printStackTrace();
+            e.getLocalizedMessage();
         } catch (Exception e) {
             System.err.println("Erro inesperado:");
             e.printStackTrace();
@@ -94,10 +91,11 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 e.printStackTrace();
             }
         }
+        return medicoAtualizado;
     }
 
     @Override
-    public ArrayList<Medico> listarTodos() throws BancoDeDadosException {
+    public ArrayList<Medico> findAll() throws BancoDeDadosException {
         ArrayList<Medico> medicos = new ArrayList<>();
         Connection con= null ;
         try {
@@ -120,10 +118,11 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 Integer idMedico = res.getInt("id_medico");
                 Integer idHospital = res.getInt("id_hospital");
                 String crm = res.getString("crm");
+                String email = res.getString("email");
 
                 String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-                Medico medico = new Medico(nome, cep, dataFormatada, cpf, salarioMensal, idHospital, crm);
+                Medico medico = new Medico(nome, cep, dataFormatada, cpf, salarioMensal, idHospital, crm, email);
 
                 medico.setIdPessoa(idPessoa);
                 medico.setIdMedico(idMedico);
@@ -146,7 +145,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public Medico listarPeloId(Integer id) throws BancoDeDadosException {
+    public Medico findById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Medico medico = new Medico();
         Connection con = null;
         try {
@@ -168,11 +167,15 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 Integer idMedico = res.getInt("id_medico");
                 Integer idHospital = res.getInt("id_hospital");
                 String crm = res.getString("crm");
+                String email = res.getString("email");
 
                 String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-                medico = new Medico(nome,cep, dataFormatada, cpf, salarioMensal, idHospital, crm);
+                medico = new Medico(nome,cep, dataFormatada, cpf, salarioMensal, idHospital, crm, email);
 
+                if(medico.equals(null)){
+                    throw new EntityNotFound("Medico não encontrado");
+                }
                 medico.setIdPessoa(idPessoa);
                 medico.setIdMedico(idMedico);
             }
@@ -192,11 +195,14 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public boolean alterarPeloId(Integer id, Medico medico) throws BancoDeDadosException {
+    public Medico update(Integer id, Medico medico) throws BancoDeDadosException, EntityNotFound {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            Medico medicoId = this.listarPeloId(id);
+            Medico medicoId = this.findById(id);
+            if(medicoId.equals(null)){
+                throw new EntityNotFound("Medico não encontrado!");
+            }
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE PESSOA SET \n");
             List<String> camposAtualizados = new ArrayList<>();
@@ -215,6 +221,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 }
                 if (medico.getSalarioMensal() != null) {
                     camposAtualizados.add("salario_mensal = ?");
+                }
+                if (medico.getEmail() != null) {
+                    camposAtualizados.add("email = ?");
                 }
             }
 
@@ -241,6 +250,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                     if (medico.getSalarioMensal() != null) {
                         st.setDouble(index++, medico.getSalarioMensal());
                     }
+                    if (medico.getEmail()!= null){
+                        st.setString(index++, medico.getEmail());
+                    }
                 }
 
                 st.setInt(index++, medicoId.getIdPessoa());
@@ -260,10 +272,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
 
                 int res2 = statement.executeUpdate();
 
-                return res2 > 0;
+                return findById(id);
             } else {
-                System.err.println("Nenhum campo para atualizar.");
-                return false;
+                throw new RuntimeException("Nenhum campo para atualizar.");
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -280,12 +291,17 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public boolean deletarPeloId(Integer id) throws BancoDeDadosException {
+    public boolean deleteById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Connection con = null;
+
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            Medico medico = listarPeloId(id);
+            Medico medico = findById(id);
+
+            if(medico.equals(null)){
+                throw new EntityNotFound("Medico não encontrado");
+            }
 
             String sql = "DELETE FROM MEDICO WHERE ID_MEDICO = ?";
 
@@ -318,37 +334,37 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
         }
     }
 
-    public boolean buscarCpf(Medico medico){
-        Connection con = null;
-        boolean retorno = false;
-        try {
-            con = ConexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM Pessoa " +
-                    "WHERE cpf = ?";
-
-            PreparedStatement st = con.prepareStatement(sql);
-
-            st.setString(1, medico.getCpf());
-
-            ResultSet rs = st.executeQuery();
-
-            if (rs.next()){
-                retorno = true;
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        }finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return retorno;
-
-    }
+//    public boolean buscarCpf(Medico medico){
+//        Connection con = null;
+//        boolean retorno = false;
+//        try {
+//            con = ConexaoBancoDeDados.getConnection();
+//            String sql = "SELECT * FROM Pessoa " +
+//                    "WHERE cpf = ?";
+//
+//            PreparedStatement st = con.prepareStatement(sql);
+//
+//            st.setString(1, medico.getCpf());
+//
+//            ResultSet rs = st.executeQuery();
+//
+//            if (rs.next()){
+//                retorno = true;
+//            }
+//
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }finally {
+//            try {
+//                if (con != null) {
+//                    con.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        return retorno;
+//
+//    }
 }

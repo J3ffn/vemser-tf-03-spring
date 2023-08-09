@@ -1,7 +1,7 @@
 package br.com.dbc.wbhealth.controller;
 
-import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
-import br.com.dbc.wbhealth.model.entity.Hospital;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalOutputDTO;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalInputDTO;
 import br.com.dbc.wbhealth.service.HospitalService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/hospital")
 @Validated
-public class HospitalController {
+public class HospitalController{
 
     private final HospitalService hospitalService;
 
@@ -23,28 +23,28 @@ public class HospitalController {
         this.hospitalService = hospitalService;
     }
 
-    @GetMapping("/listar-todos")
-    public List<Hospital> listarTodos() throws BancoDeDadosException {
-            return hospitalService.listarTodos();
+    @GetMapping
+    public ResponseEntity<List<HospitalOutputDTO>> findAll(){
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.findAll());
     }
 
-    @GetMapping("/listar-pelo-id/{idHospital}")
-    public Hospital listarPeloID(@Positive @PathVariable Integer id) throws BancoDeDadosException { /////
-        return hospitalService.listarPeloId(id);
+    @GetMapping("/{idHospital}")
+    public ResponseEntity<HospitalOutputDTO> findById(@Positive @PathVariable Integer idHospital){
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.findById(idHospital));
     }
 
-    @PostMapping("/cadastrar")
-    public Hospital cadastrar(@Valid @RequestBody Hospital hospital) {
-        return hospitalService.cadastrar(hospital);
+    @PostMapping
+    public ResponseEntity<HospitalOutputDTO> save(@Valid @RequestBody HospitalInputDTO hospital){
+        return  ResponseEntity.status(HttpStatus.CREATED).body(hospitalService.save(hospital));
     }
-    @PutMapping("/alterar{idHospital}")
-    public ResponseEntity<Hospital> alterarPeloId(@Positive @PathVariable Integer id, @Valid @RequestBody Hospital hospital){
-        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.alterarPeloId(id, hospital));
+    @PutMapping("/{idHospital}")
+    public ResponseEntity<HospitalOutputDTO> update(@Positive @PathVariable Integer idHospital, @Valid @RequestBody HospitalInputDTO hospital){
+        return ResponseEntity.status(HttpStatus.OK).body(hospitalService.update(idHospital, hospital));
     }
 
-    @PutMapping("/deletar/{idHospital}")
-    public ResponseEntity deletarPeloId(@Positive @PathVariable Integer id){
-        hospitalService.deletarPeloId(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{idHospital}")
+    public ResponseEntity<Boolean> deleteById(@Positive @PathVariable Integer idHospital){
+        hospitalService.deleteById(idHospital);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

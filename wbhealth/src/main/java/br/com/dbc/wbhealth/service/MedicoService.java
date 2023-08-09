@@ -1,8 +1,12 @@
 package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
+import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import br.com.dbc.wbhealth.repository.MedicoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -12,6 +16,8 @@ import java.util.ArrayList;
 public class MedicoService {
 
     private final MedicoRepository medicoRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public MedicoService(MedicoRepository medicoRepository) {
         this.medicoRepository=medicoRepository;
@@ -21,26 +27,38 @@ public class MedicoService {
         return medicoRepository.buscarCpf(medico);
     }
 
-    public Medico buscarId(Integer id) throws BancoDeDadosException {
-        return medicoRepository.buscarId(id);
-    }
-    public Medico inserir(Medico medico) {
-        Medico novoMedico=new Medico();
+
+//    objectMapper.registerModule(new JavaTimeModule());
+
+
+//    public Medico buscarId(Integer id) throws BancoDeDadosException {
+//        return medicoRepository.findById(id);
+
+    public MedicoOutputDTO save(MedicoInputDTO medicoInputDTO) {
+        Medico medico = new Medico();
+        medico= objectMapper.convertValue(medicoInputDTO, Medico.class);
+        MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
-            String cpf = medico.getCpf().replaceAll("[^0-9]", "");
-            if (cpf.length() != 11) {
-                throw new Exception("CPF Invalido!");
-            }
-            medico.setCpf(cpf);
+            Medico medicoAtualizado = medicoRepository.save(medico);
+            medicoOutputDTO=objectMapper.convertValue(medico, MedicoOutputDTO.class);
+//            String cpf = medicoInputDTO.getCpf().replaceAll("[^0-9]", "");
+//            if (cpf.length() != 11) {
+//                throw new Exception("CPF Invalido!");
+//            }
+//            medico.setCpf(cpf);
 
-            String cep = medico.getCep().replaceAll("[^0-9]", "");
-            if (cep.length() != 8) {
-                throw new Exception("CEP inválido! Deve conter exatamente 8 dígitos numéricos.");
-            }
-            medico.setCep(cep);
-            medicoRepository.cadastrar(medico);
-            novoMedico= medico;
+//            String cep = medico.getCep().replaceAll("[^0-9]", "");
+//            if (cep.length() != 8) {
+//                throw new Exception("CEP inválido! Deve conter exatamente 8 dígitos numéricos.");
+//            }
 
+//            String crm = medicoInputDTO.getCrm().replaceAll("^[A-Z]{2}-\\\\d{7}/\\\\d{2}$", "");
+//            if(crm.length() != 13){
+//                throw new Exception("CRM invalido. Deve ser digitado no formato: UF-1234567/89.");
+//            }
+//            medico.setCep(cep);
+//            medicoRepository.save(medico);
+//            novoMedico= medico;
 //            System.out.println(CoresMenu.VERDE_BOLD + "\nOperação realizada com sucesso!" + CoresMenu.RESET);
 
         } catch (BancoDeDadosException e) {
@@ -48,35 +66,49 @@ public class MedicoService {
         } catch (Exception e) {
             System.out.println("Unnexpected error: " + e.getMessage());
         }
-        return novoMedico;
+        return medicoOutputDTO;
     }
 
-    public ArrayList<Medico> listarTodos() throws BancoDeDadosException {
-        return medicoRepository.listarTodos();
+    public ArrayList<MedicoOutputDTO> findAll() throws BancoDeDadosException {
+        ArrayList<Medico> listaMedico= medicoRepository.findAll();
+        ArrayList<MedicoOutputDTO> listaMedicoOutputDto = new ArrayList<>();
+
+        for (int i = 0; i< listaMedico.size(); i++){
+            listaMedicoOutputDto.add(objectMapper.convertValue(listaMedico.get(i), MedicoOutputDTO.class));
+        }
+
+        return listaMedicoOutputDto;
     }
 
-    public void listarPeloId(Integer id) throws BancoDeDadosException {
-        Medico medico = medicoRepository.listarPeloId(id);
-        System.out.println(medico);
+    public MedicoOutputDTO findById(Integer id) throws BancoDeDadosException {
+        Medico medico = medicoRepository.findById(id);
+        return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
 
-    public Medico alterarPeloId(Integer id, Medico medicoAtualizado) throws BancoDeDadosException {
+    public MedicoOutputDTO update(Integer idMedico, MedicoInputDTO medicoInputDTO) throws BancoDeDadosException {
         Medico medico = new Medico();
         try {
-            boolean consegueEditar = medicoRepository.alterarPeloId(id, medicoAtualizado);
-            if (consegueEditar) {
+            Medico medicoAux= medicoRepository.findAll().stream()
+                    .filter(x -> x.getIdMedico() == idMedico)
+                    .findFirst().orElseThrow(() -> new BancoDeDadosException (new Throwable("Id não encontrado")));
+            medicoAux.setCpf(medicoInputDTO.getCpf());
+            medicoAux.setCrm(medicoInputDTO.getCrm());
+            medicoAux.setCep(medicoInputDTO.getCep());
+            medicoAux.setNome(medicoInputDTO.getNome());
+            medicoAux.setDataNascimento(medicoInputDTO.getDataNascimento());
+            medicoAux.setSalarioMensal(medicoInputDTO.getSalarioMensal());
+            medicoAux.setEmail(medicoInputDTO.getEmail());
+            medico = medicoRepository.findById(idMedico);
 
-                medico = medicoRepository.listarPeloId(id);
-            }
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
         }
-        return medico;
+        return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
     public String deletarPeloId(Integer id) {
         String retorno = new String();
         try {
-            boolean removeu = medicoRepository.deletarPeloId(id);
+            boolean removeu = medicoRepository.deleteById(id);
             if (removeu) {
                 retorno = "Medico deletado com sucesso.";
             }

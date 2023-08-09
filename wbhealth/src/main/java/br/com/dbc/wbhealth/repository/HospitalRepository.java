@@ -12,7 +12,7 @@ import java.util.List;
 public class HospitalRepository implements Repositorio<Integer, Hospital> {
 
     @Override
-    public Integer getProximoId(Connection connection, String nextSequence) throws SQLException {
+    public Integer getProximoId(Connection connection, String nextSequence) throws BancoDeDadosException {
         try {
             String sql = "SELECT " + nextSequence + " mysequence from DUAL";
             Statement stmt = connection.createStatement();
@@ -28,12 +28,7 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
     }
 
     @Override
-    public Hospital buscarId(Integer id) throws BancoDeDadosException { ////Excluir
-        return null;
-    }
-
-    @Override
-    public List<Hospital> listarTodos() throws BancoDeDadosException {
+    public List<Hospital> findAll() throws BancoDeDadosException {
         List<Hospital> hospitais = new ArrayList<>();
         Connection con = null;
 
@@ -66,22 +61,30 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
     }
 
     @Override
-    public Hospital listarPeloId(Integer id) throws BancoDeDadosException {
-        Hospital hospital = new Hospital();
+    public Hospital findById(Integer id) throws BancoDeDadosException {
+        Hospital hospital = null;
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM HOSPITAL WHERE ID_HOSPITAL = " + id;
 
-            ResultSet res = stmt.executeQuery(sql);
+            PreparedStatement st = con.prepareStatement(sql);
 
-            hospital.setIdHospital(res.getInt("id_hospital"));
-            hospital.setNome(res.getString("nome"));
+            ResultSet res = st.executeQuery(sql);
+            if (res.next()) {
+                Integer idHospital = res.getInt("id_hospital");
+                String nome = res.getString("nome");
 
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
+                hospital = new Hospital(idHospital, nome);
+            }
+
+        } catch (BancoDeDadosException e) {
+            System.err.println("Erro ao acessar o banco de dados:");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Erro inesperado:");
+            e.printStackTrace();
         } finally {
             try {
                 if (con != null) {
@@ -89,14 +92,16 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new BancoDeDadosException(e.getCause());
             }
         }
         return hospital;
     }
 
     @Override
-    public void cadastrar(Hospital hospital){ ////Deve retornar hospital
+    public Hospital save(Hospital hospital) throws BancoDeDadosException {
         Connection con = null;
+        Hospital hospitalAux = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
@@ -113,8 +118,10 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
             stHospital.setString(2, hospital.getNome());
 
             int hospitaisInseridos = stHospital.executeUpdate();
+
             if (hospitaisInseridos == 0) throw new SQLException("Ocorreu um erro ao inserir!");
-//            return hospital;
+            hospitalAux = findById(proximoHospitalId);
+
         } catch (BancoDeDadosException e) {
             System.err.println("Erro ao acessar o banco de dados:");
             e.printStackTrace();
@@ -128,27 +135,74 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new BancoDeDadosException(e.getCause());
+            }
+        }
+        return hospitalAux;
+    }
+
+    @Override
+    public Hospital update(Integer id, Hospital hospital) throws BancoDeDadosException {
+
+        Connection con = null;
+        try {
+            con = ConexaoBancoDeDados.getConnection();
+
+            Hospital hospitalBd = this.findById(id);
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE HOSPITAL SET nome = ?");
+            sql.append(" WHERE id_hospital = ?");
+
+            PreparedStatement st = con.prepareStatement(sql.toString());
+
+            int index = 1;
+
+            if (hospital != null && hospital.getNome() != null) {
+                st.setString(index++, hospital.getNome());
+            }
+
+            st.setInt(index++, hospitalBd.getIdHospital());
+            st.executeUpdate();
+
+            return findById(id);
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
 
     @Override
-    public boolean alterarPeloId(Integer id, Hospital hospital) throws BancoDeDadosException {
-
+    public boolean deleteById(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
-            Hospital hospital1Id = this.listarPeloId(id);
-            StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE HOSPITAL SET nome = ?\n");
-            sql.append("WHERE HOSPITAL.id_hospital = ?");
 
-            PreparedStatement st = con.prepareStatement(sql.toString());
+            Hospital hospital = findById(id);
 
-            st.setString(1, hospital.getNome());
-            st.setInt(2, id);
+            String sql = "DELETE FROM HOSPITAL WHERE id_hospital = ?";
+
+            PreparedStatement st = con.prepareStatement(sql);
+
+            st.setInt(1, id);
 
             int res = st.executeUpdate();
+
+            if (res > 0) {
+                String sqlHospital = "DELETE FROM HOSPITAL WHERE id_hospital = ?";
+                PreparedStatement sqlHospitais = con.prepareStatement(sqlHospital);
+                sqlHospitais.setInt(1, hospital.getIdHospital());
+                res = st.executeUpdate();
+            } else {
+                throw new SQLException("Ocorreu um erro na operação");
+            }
             return res > 0;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
@@ -162,41 +216,5 @@ public class HospitalRepository implements Repositorio<Integer, Hospital> {
                 throw new BancoDeDadosException(e.getCause());
             }
         }
-    }
-
-    @Override
-    public boolean deletarPeloId(Integer id) throws BancoDeDadosException {
-        Connection con = null;
-        try {
-            con = ConexaoBancoDeDados.getConnection();
-
-            String sql = "DELETE FROM HOSPITAL WHERE id_hospital = ?";
-
-            PreparedStatement stmt = con.prepareStatement(sql);
-
-            stmt.setInt(1, id);
-
-            int res = stmt.executeUpdate();
-
-            return res > 0;
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    private Hospital getHospitalFromResultSet(ResultSet res) throws SQLException {
-        Hospital hospital = new Hospital();
-        hospital.setIdHospital(res.getInt("id_hospital"));
-        hospital.setNome(res.getString("nome"));
-        return hospital;
     }
 }
