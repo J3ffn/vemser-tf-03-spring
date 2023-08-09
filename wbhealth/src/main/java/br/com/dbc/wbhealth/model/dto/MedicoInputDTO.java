@@ -41,5 +41,8 @@ public class MedicoInputDTO {
     @NotBlank
     @Size(min=13, max=13)
     private String crm;
+    @NotBlank
+    @Email
+    private String email;
 
 }
