@@ -2,11 +2,9 @@ package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
-import br.com.dbc.wbhealth.model.dto.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoInputDTO;
 import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
-import br.com.dbc.wbhealth.model.dto.output.HospitalOutputDTO;
-import br.com.dbc.wbhealth.model.dto.paciente.PacienteOutputDTO;
+
 import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import br.com.dbc.wbhealth.model.entity.Paciente;
