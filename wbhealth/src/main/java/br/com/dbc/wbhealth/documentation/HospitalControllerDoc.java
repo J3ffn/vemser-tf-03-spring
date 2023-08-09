@@ -40,7 +40,7 @@ public interface HospitalControllerDoc {
     @Operation(summary = "Criar hospital", description = "Cria hospital com o dado repassado pela requisicao")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Cadastrado com sucesso!"),
+                    @ApiResponse(responseCode = "201", description = "Cadastrado com sucesso!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
