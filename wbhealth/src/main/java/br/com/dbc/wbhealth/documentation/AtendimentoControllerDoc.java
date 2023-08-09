@@ -1,4 +1,4 @@
-package br.com.dbc.wbhealth.controller.documentation;
+package br.com.dbc.wbhealth.documentation;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;

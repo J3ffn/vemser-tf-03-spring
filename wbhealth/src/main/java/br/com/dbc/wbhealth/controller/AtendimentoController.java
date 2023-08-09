@@ -1,6 +1,6 @@
 package br.com.dbc.wbhealth.controller;
 
-import br.com.dbc.wbhealth.controller.documentation.AtendimentoControllerDoc;
+import br.com.dbc.wbhealth.documentation.AtendimentoControllerDoc;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoInputDTO;
