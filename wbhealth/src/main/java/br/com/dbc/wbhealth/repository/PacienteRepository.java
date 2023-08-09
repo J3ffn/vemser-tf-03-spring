@@ -3,7 +3,6 @@ package br.com.dbc.wbhealth.repository;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.entity.Paciente;
-import br.com.dbc.wbhealth.repository.Repositorio;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -50,12 +49,9 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             final String QUERY_SQL = "SELECT * FROM PACIENTE\n"
                                     + "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? "
                                     + "AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
-
             PreparedStatement statement = conexao.prepareStatement(QUERY_SQL);
-
             statement.setInt(1, idPaciente);
-            statement.executeQuery(QUERY_SQL);
-
+            statement.executeQuery();
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()){
