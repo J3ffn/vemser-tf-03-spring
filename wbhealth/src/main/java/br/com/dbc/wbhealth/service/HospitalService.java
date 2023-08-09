@@ -2,15 +2,14 @@ package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.NegocioException;
-import br.com.dbc.wbhealth.model.dto.output.HospitalOutputDTO;
-import br.com.dbc.wbhealth.model.dto.input.HospitalInputDTO;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalOutputDTO;
+import br.com.dbc.wbhealth.model.dto.hospital.HospitalInputDTO;
 import br.com.dbc.wbhealth.model.entity.Hospital;
 import br.com.dbc.wbhealth.repository.HospitalRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -88,23 +87,14 @@ public class HospitalService {
         }
     }
     private Hospital convertToEntity(HospitalInputDTO hospitalInputDTO) {
-        Hospital entity = objectMapper.convertValue(hospitalInputDTO, Hospital.class);
-        entity.setNome(hospitalInputDTO.getNome());
-        return entity;
+        return objectMapper.convertValue(hospitalInputDTO, Hospital.class);
     }
 
-    private static HospitalOutputDTO convertToDTO(Hospital hospital) {
-        HospitalOutputDTO hospitalOutputDTO = new HospitalOutputDTO();
-        hospitalOutputDTO.setIdHospital(hospital.getIdHospital());
-        hospitalOutputDTO.setNome(hospital.getNome());
-        return hospitalOutputDTO;
+    private HospitalOutputDTO convertToDTO(Hospital hospital) {
+        return objectMapper.convertValue(hospital, HospitalOutputDTO.class);
     }
 
-    private static List<HospitalOutputDTO> convertListToDTO(List<Hospital> hospitais) {
-        List<HospitalOutputDTO> hospitaisDtos = new ArrayList<>();
-        for (Hospital hospital : hospitais) {
-            hospitaisDtos.add(convertToDTO(hospital));
-        }
-        return hospitaisDtos;
+    private  List<HospitalOutputDTO> convertListToDTO(List<Hospital> hospitais) {
+        return objectMapper.convertValue(hospitais, List.class);
     }
 }

@@ -28,6 +28,7 @@ public abstract class Pessoa {
     @PositiveOrZero
     private Double salarioMensal;
     @Email
+    @NotBlank
     private String email;
 
 //    public Pessoa() {
@@ -39,6 +40,9 @@ public abstract class Pessoa {
         this.dataNascimento = LocalDate.parse(dataNascimento, FORMAT);
         this.cpf = cpf;
         this.salarioMensal = salarioMensal;
+    }
+
+    public Pessoa(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, String email) {
     }
 
 //    public Pessoa(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal) {
