@@ -13,8 +13,11 @@ CREATE TABLE Pessoa(
     data_nascimento DATE,
     cpf CHAR(11) UNIQUE NOT NULL,
     salario_mensal DECIMAL(7,2),
+    email VARCHAR2(75),
      CONSTRAINT pk_Pessoa PRIMARY KEY (id_pessoa)
 );
+
+
 
 
 CREATE SEQUENCE seq_pessoa
