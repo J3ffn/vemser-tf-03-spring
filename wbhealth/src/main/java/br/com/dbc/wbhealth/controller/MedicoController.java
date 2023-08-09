@@ -1,5 +1,6 @@
 package br.com.dbc.wbhealth.controller;
 
+import br.com.dbc.wbhealth.documentation.MedicoControllerDoc;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.model.dto.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.MedicoOutputDTO;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 @Validated
 @RestController
 @RequestMapping("/medico")
-public class MedicoController {
+public class MedicoController implements MedicoControllerDoc {
     private final MedicoService medicoService;
 
     @Autowired
