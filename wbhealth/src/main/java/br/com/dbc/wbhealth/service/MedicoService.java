@@ -97,6 +97,7 @@ public class MedicoService {
             medicoAux.setNome(medicoInputDTO.getNome());
             medicoAux.setDataNascimento(medicoInputDTO.getDataNascimento());
             medicoAux.setSalarioMensal(medicoInputDTO.getSalarioMensal());
+            medicoAux.setEmail(medicoInputDTO.getEmail());
             medico = medicoRepository.findById(idMedico);
 
         } catch (BancoDeDadosException e) {
