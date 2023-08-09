@@ -42,7 +42,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             medico.setIdPessoa(proximoPessoaId);
 
             String sqlPessoa = "INSERT INTO Pessoa\n" +
-                    "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)\n" +
+                    "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stPesssoa = con.prepareStatement(sqlPessoa);
@@ -53,6 +53,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             stPesssoa.setDate(4, Date.valueOf(medico.getDataNascimento()));
             stPesssoa.setString(5, medico.getCpf());
             stPesssoa.setDouble(6, medico.getSalarioMensal());
+            stPesssoa.setString(7, medico.getEmail());
 
 
             int pessoasInseridas = stPesssoa.executeUpdate();
@@ -116,10 +117,11 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 Integer idMedico = res.getInt("id_medico");
                 Integer idHospital = res.getInt("id_hospital");
                 String crm = res.getString("crm");
+                String email = res.getString("email");
 
                 String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-                Medico medico = new Medico(nome, cep, dataFormatada, cpf, salarioMensal, idHospital, crm);
+                Medico medico = new Medico(nome, cep, dataFormatada, cpf, salarioMensal, idHospital, crm, email);
 
                 medico.setIdPessoa(idPessoa);
                 medico.setIdMedico(idMedico);
@@ -164,10 +166,11 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 Integer idMedico = res.getInt("id_medico");
                 Integer idHospital = res.getInt("id_hospital");
                 String crm = res.getString("crm");
+                String email = res.getString("email");
 
                 String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-                medico = new Medico(nome,cep, dataFormatada, cpf, salarioMensal, idHospital, crm);
+                medico = new Medico(nome,cep, dataFormatada, cpf, salarioMensal, idHospital, crm, email);
 
                 medico.setIdPessoa(idPessoa);
                 medico.setIdMedico(idMedico);
@@ -212,6 +215,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 if (medico.getSalarioMensal() != null) {
                     camposAtualizados.add("salario_mensal = ?");
                 }
+                if (medico.getEmail() != null) {
+                    camposAtualizados.add("email = ?");
+                }
             }
 
             if (!camposAtualizados.isEmpty()) {
@@ -236,6 +242,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                     }
                     if (medico.getSalarioMensal() != null) {
                         st.setDouble(index++, medico.getSalarioMensal());
+                    }
+                    if (medico.getEmail()!= null){
+                        st.setString(index++, medico.getEmail());
                     }
                 }
 
