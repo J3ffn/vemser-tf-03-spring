@@ -2,9 +2,8 @@ package br.com.dbc.wbhealth.controller;
 
 import br.com.dbc.wbhealth.documentation.MedicoControllerDoc;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
-import br.com.dbc.wbhealth.model.dto.MedicoInputDTO;
-import br.com.dbc.wbhealth.model.dto.MedicoOutputDTO;
-import br.com.dbc.wbhealth.model.entity.Medico;
+import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
+import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.service.MedicoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

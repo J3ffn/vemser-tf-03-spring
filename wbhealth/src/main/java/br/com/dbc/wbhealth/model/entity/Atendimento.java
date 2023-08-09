@@ -17,35 +17,20 @@ import java.time.format.DateTimeFormatter;
 
 public class Atendimento {
 
-    @Positive
     private Integer idAtendimento;
 
-    @Positive
-    @NotNull
     private Integer idHospital;
 
-    @Positive
-    @NotNull
     private Integer idPaciente;
 
-    @Positive
-    @NotNull
     private Integer idMedico;
 
-    @NotNull
-    @FutureOrPresent
-    @DateTimeFormat
     private LocalDate dataAtendimento;
 
-    @NotBlank
-    @NotNull
     private String laudo;
 
-    @NotNull
     private TipoDeAtendimento tipoDeAtendimento;
 
-    @Positive
-    @Nullable
     private Double valorDoAtendimento;
 
     @Override

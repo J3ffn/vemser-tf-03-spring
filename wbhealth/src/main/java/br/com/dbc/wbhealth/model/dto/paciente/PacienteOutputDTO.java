@@ -16,4 +16,5 @@ public class PacienteOutputDTO {
     private LocalDate dataNascimento;
     private String cpf;
     private Double salarioMensal;
+    private String email;
 }

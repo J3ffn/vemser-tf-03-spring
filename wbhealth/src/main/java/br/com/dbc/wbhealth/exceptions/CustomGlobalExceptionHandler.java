@@ -81,12 +81,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     @ExceptionHandler(IndexOutOfBoundsException.class)
     public ResponseEntity<Object> handleException(IndexOutOfBoundsException exception,
                                                   HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createBody(exception));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(createBody(exception));
     }
 
     @ExceptionHandler(EntityNotFound.class)
     public ResponseEntity<Object> handleException(EntityNotFound exception,
                                                   HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createBody(exception));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(createBody(exception));
     }
 }
