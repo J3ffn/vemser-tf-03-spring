@@ -1,6 +1,5 @@
 package br.com.dbc.wbhealth.model.dto.paciente;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
 

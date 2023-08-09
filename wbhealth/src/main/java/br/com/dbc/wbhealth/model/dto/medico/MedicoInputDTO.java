@@ -1,4 +1,4 @@
-package br.com.dbc.wbhealth.model.dto;
+package br.com.dbc.wbhealth.model.dto.medico;
 
 import br.com.dbc.wbhealth.model.entity.Pessoa;
 import com.fasterxml.jackson.annotation.JsonFormat;

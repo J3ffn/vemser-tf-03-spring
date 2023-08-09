@@ -1,7 +1,7 @@
 package br.com.dbc.wbhealth.documentation;
 
-import br.com.dbc.wbhealth.model.dto.MedicoInputDTO;
-import br.com.dbc.wbhealth.model.dto.MedicoOutputDTO;
+import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
+import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

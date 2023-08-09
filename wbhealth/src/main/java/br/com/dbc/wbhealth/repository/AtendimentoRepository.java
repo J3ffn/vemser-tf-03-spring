@@ -47,7 +47,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
             return atendimento;
 
         } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause());
+            throw new BancoDeDadosException(new Throwable("DEU RUIM NO SALVAMENTO!"));
         } finally {
             try {
                 if (con != null) {

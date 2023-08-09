@@ -1,5 +1,6 @@
 package br.com.dbc.wbhealth.controller;
 
+import br.com.dbc.wbhealth.controller.documentation.AtendimentoControllerDoc;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoInputDTO;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/atendimento")
-public class AtendimentoController {
+public class AtendimentoController implements AtendimentoControllerDoc {
 
     private AtendimentoService atendimentoService;
 
@@ -33,7 +35,7 @@ public class AtendimentoController {
     }
 
     @PostMapping
-    public ResponseEntity<AtendimentoOutputDTO> save(@Valid @RequestBody AtendimentoInputDTO novoAtendimento) throws BancoDeDadosException {
+    public ResponseEntity<AtendimentoOutputDTO> save(@Valid @RequestBody AtendimentoInputDTO novoAtendimento) throws BancoDeDadosException, EntityNotFound, MessagingException {
         return ResponseEntity.status(HttpStatus.CREATED).body(atendimentoService.save(novoAtendimento));
     }
 
@@ -49,7 +51,7 @@ public class AtendimentoController {
 
     @PutMapping("/{idAtendimento}")
     public ResponseEntity<AtendimentoOutputDTO> alterarPeloId(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento,
-                                                              @Valid @RequestBody AtendimentoInputDTO atendimento) throws BancoDeDadosException, EntityNotFound {
+                                                              @Valid @RequestBody AtendimentoInputDTO atendimento) throws BancoDeDadosException, EntityNotFound, MessagingException {
         return ResponseEntity.status(HttpStatus.OK).body(atendimentoService.update(idAtendimento, atendimento));
     }
 

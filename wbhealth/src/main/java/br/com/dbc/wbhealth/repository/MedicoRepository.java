@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.repository;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import org.springframework.stereotype.Repository;
 
@@ -144,7 +145,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public Medico findById(Integer id) throws BancoDeDadosException {
+    public Medico findById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Medico medico = new Medico();
         Connection con = null;
         try {
@@ -172,6 +173,9 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
 
                 medico = new Medico(nome,cep, dataFormatada, cpf, salarioMensal, idHospital, crm, email);
 
+                if(medico.equals(null)){
+                    throw new EntityNotFound("Medico não encontrado");
+                }
                 medico.setIdPessoa(idPessoa);
                 medico.setIdMedico(idMedico);
             }
@@ -191,11 +195,14 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public Medico update(Integer id, Medico medico) throws BancoDeDadosException {
+    public Medico update(Integer id, Medico medico) throws BancoDeDadosException, EntityNotFound {
         Connection con = null;
         try {
             con = ConexaoBancoDeDados.getConnection();
             Medico medicoId = this.findById(id);
+            if(medicoId.equals(null)){
+                throw new EntityNotFound("Medico não encontrado!");
+            }
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE PESSOA SET \n");
             List<String> camposAtualizados = new ArrayList<>();
@@ -284,12 +291,17 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     }
 
     @Override
-    public boolean deleteById(Integer id) throws BancoDeDadosException {
+    public boolean deleteById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Connection con = null;
+
         try {
             con = ConexaoBancoDeDados.getConnection();
 
             Medico medico = findById(id);
+
+            if(medico.equals(null)){
+                throw new EntityNotFound("Medico não encontrado");
+            }
 
             String sql = "DELETE FROM MEDICO WHERE ID_MEDICO = ?";
 
@@ -322,37 +334,37 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
         }
     }
 
-    public boolean buscarCpf(Medico medico){
-        Connection con = null;
-        boolean retorno = false;
-        try {
-            con = ConexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM Pessoa " +
-                    "WHERE cpf = ?";
-
-            PreparedStatement st = con.prepareStatement(sql);
-
-            st.setString(1, medico.getCpf());
-
-            ResultSet rs = st.executeQuery();
-
-            if (rs.next()){
-                retorno = true;
-            }
-
-        }catch (SQLException e){
-            e.printStackTrace();
-        }finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return retorno;
-
-    }
+//    public boolean buscarCpf(Medico medico){
+//        Connection con = null;
+//        boolean retorno = false;
+//        try {
+//            con = ConexaoBancoDeDados.getConnection();
+//            String sql = "SELECT * FROM Pessoa " +
+//                    "WHERE cpf = ?";
+//
+//            PreparedStatement st = con.prepareStatement(sql);
+//
+//            st.setString(1, medico.getCpf());
+//
+//            ResultSet rs = st.executeQuery();
+//
+//            if (rs.next()){
+//                retorno = true;
+//            }
+//
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }finally {
+//            try {
+//                if (con != null) {
+//                    con.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        return retorno;
+//
+//    }
 }
