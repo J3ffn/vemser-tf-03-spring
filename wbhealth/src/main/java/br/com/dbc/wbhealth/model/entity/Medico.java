@@ -26,8 +26,8 @@ public class Medico extends Pessoa implements Pagamento {
     private String crm;
 
 
-    public Medico(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, Integer idHospital, String crm) {
-        super(nome, cep, dataNascimento, cpf, salarioMensal);
+    public Medico(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, Integer idHospital, String crm, String email) {
+        super(nome, cep, dataNascimento, cpf, salarioMensal, email);
         this.idHospital = idHospital;
         this.crm = crm;
     }
