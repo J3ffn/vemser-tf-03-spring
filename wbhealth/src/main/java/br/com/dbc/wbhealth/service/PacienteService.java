@@ -73,7 +73,8 @@ public class PacienteService {
                 paciente.getCep(),
                 paciente.getDataNascimento(),
                 paciente.getCpf(),
-                paciente.getSalarioMensal()
+                paciente.getSalarioMensal(),
+                paciente.getEmail()
         );
     }
 }

@@ -50,9 +50,12 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             final String QUERY_SQL = "SELECT * FROM PACIENTE\n"
                                     + "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? "
                                     + "AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
+
             PreparedStatement statement = conexao.prepareStatement(QUERY_SQL);
-            statement.executeQuery(QUERY_SQL);
+
             statement.setInt(1, idPaciente);
+            statement.executeQuery(QUERY_SQL);
+
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()){

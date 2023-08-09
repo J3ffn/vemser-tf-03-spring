@@ -27,6 +27,8 @@ public abstract class Pessoa {
     private String cpf;
     @PositiveOrZero
     private Double salarioMensal;
+    @Email
+    private String email;
 
 //    public Pessoa() {
 //    }
