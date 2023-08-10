@@ -91,7 +91,7 @@ public class MedicoService {
         try {
             Medico medicoAux= medicoRepository.findAll().stream()
                     .filter(x -> x.getIdMedico() == idMedico)
-                    .findFirst().orElseThrow(() -> new BancoDeDadosException (new Throwable("Id não encontrado")));
+                    .findFirst().orElseThrow(() -> new EntityNotFound("Id não encontrado"));
             medicoAux.setCpf(medicoInputDTO.getCpf());
             medicoAux.setCrm(medicoInputDTO.getCrm());
             medicoAux.setCep(medicoInputDTO.getCep());
@@ -109,7 +109,7 @@ public class MedicoService {
         }
         return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
-    public String deletarPeloId(Integer id) {
+    public String deletarPeloId(Integer id) throws EntityNotFound {
         String retorno = new String();
         try {
             boolean removeu = medicoRepository.deleteById(id);

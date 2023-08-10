@@ -79,8 +79,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             conexao = ConexaoBancoDeDados.getConnection();
 
             final String QUERY_PESSOA = "INSERT INTO PESSOA\n"
-                    + "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)\n"
-                    + "VALUES(?, ?, ?, ?, ?, ?)\n";
+                    + "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)\n"
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?)\n";
             inserirNaTabelaPessoa(paciente, conexao, QUERY_PESSOA);
 
             final String QUERY_PACIENTE = "INSERT INTO PACIENTE\n"
@@ -114,6 +114,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                                         + "data_nascimento = ?, "
                                         + "cpf = ?, "
                                         + "salario_mensal = ? "
+                                        + "email = ?">>>>>>> develop
                                         + "WHERE id_pessoa = ?";
 
             PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);
@@ -122,7 +123,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             preparedStatement.setDate(3, Date.valueOf(pacienteModificado.getDataNascimento()));
             preparedStatement.setString(4, pacienteModificado.getCpf());
             preparedStatement.setDouble(5, pacienteModificado.getSalarioMensal());
-            preparedStatement.setInt(6, pacienteAtualizado.getIdPessoa());
+            preparedStatement.setString(6, pacienteAtualizado.getEmail());            
+            preparedStatement.setInt(7, pacienteAtualizado.getIdPessoa());
 
             preparedStatement.executeUpdate();
 
@@ -179,7 +181,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         }
     }
 
-    public boolean buscarCpf(Paciente paciente) throws BancoDeDadosException {
+    /*public boolean buscarCpf(Paciente paciente) throws BancoDeDadosException {
         Connection conexao = null;
         boolean retorno = false;
 
@@ -204,7 +206,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         }
 
         return retorno;
-    }
+    }*/
 
     private Paciente getPacienteFromResultSet(ResultSet resultSet) throws SQLException {
         Integer idPessoa = resultSet.getInt("id_pessoa");
@@ -213,13 +215,15 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         LocalDate data = resultSet.getDate("data_nascimento").toLocalDate();
         String cpf = resultSet.getString("cpf");
         Double salarioMensal = resultSet.getDouble("salario_mensal");
+        String email = resultSet.getString("email");
         Integer idPaciente = resultSet.getInt("id_paciente");
         Integer idHospital = resultSet.getInt("id_hospital");
         String email = resultSet.getString("email");
 
         String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
-        Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf, salarioMensal, idHospital);
+        Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf,
+                                        salarioMensal, email, idHospital);
 
         paciente.setEmail(email);
 
@@ -250,6 +254,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         stPesssoa.setDate(4, Date.valueOf(paciente.getDataNascimento()));
         stPesssoa.setString(5, paciente.getCpf());
         stPesssoa.setDouble(6, paciente.getSalarioMensal());
+        stPesssoa.setString(7, paciente.getEmail());
 
         stPesssoa.executeUpdate();
     }

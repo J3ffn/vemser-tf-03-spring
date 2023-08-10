@@ -13,10 +13,11 @@ public class Paciente extends Pessoa {
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private Integer idPaciente;
     private Integer idHospital;
+    private String email;
 
-    public Paciente(String nome, String cep, String dataNacimento,
-                    String cpf, Double salarioMensal, Integer idHospital) {
-        super(nome, cep, dataNacimento, cpf, salarioMensal);
+    public Paciente(String nome, String cep, String dataNacimento, String cpf,
+                    Double salarioMensal, String email, Integer idHospital) {
+        super(nome, cep, dataNacimento, cpf, salarioMensal, email);
         this.idHospital = idHospital;
     }
 
