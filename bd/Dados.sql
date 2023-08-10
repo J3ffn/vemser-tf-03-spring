@@ -2,7 +2,7 @@
 
 --
 INSERT INTO Hospital(id_hospital, nome)
-VALUES(1, 'WB Health')
+VALUES(1, 'WB Health');
 
 -- Pessoa --
 INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)
