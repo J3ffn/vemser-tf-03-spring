@@ -22,4 +22,7 @@ public class PacienteInputDTO {
     private Double salarioMensal;
     @Positive
     private Integer idHospital;
+    @NotBlank
+    @Email
+    private String email;
 }

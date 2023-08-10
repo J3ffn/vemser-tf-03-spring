@@ -79,8 +79,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             conexao = ConexaoBancoDeDados.getConnection();
 
             final String QUERY_PESSOA = "INSERT INTO PESSOA\n"
-                    + "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)\n"
-                    + "VALUES(?, ?, ?, ?, ?, ?)\n";
+                    + "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)\n"
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?)\n";
             inserirNaTabelaPessoa(paciente, conexao, QUERY_PESSOA);
 
             final String QUERY_PACIENTE = "INSERT INTO PACIENTE\n"
@@ -114,6 +114,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                                         + "data_nascimento = ?, "
                                         + "cpf = ?, "
                                         + "salario_mensal = ? "
+                                        + "email = ?"
                                         + "WHERE id_pessoa = ?";
 
             PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);
@@ -122,7 +123,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             preparedStatement.setDate(3, Date.valueOf(pacienteModificado.getDataNascimento()));
             preparedStatement.setString(4, pacienteModificado.getCpf());
             preparedStatement.setDouble(5, pacienteModificado.getSalarioMensal());
-            preparedStatement.setInt(6, pacienteAtualizado.getIdPessoa());
+            preparedStatement.setString(6, pacienteAtualizado.getEmail());
+            preparedStatement.setInt(7, pacienteAtualizado.getIdPessoa());
 
             preparedStatement.executeUpdate();
 
