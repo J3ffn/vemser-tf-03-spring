@@ -2,47 +2,44 @@ package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
-import br.com.dbc.wbhealth.exceptions.NegocioException;
 import br.com.dbc.wbhealth.model.dto.paciente.PacienteInputDTO;
 import br.com.dbc.wbhealth.model.dto.paciente.PacienteOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Paciente;
 import br.com.dbc.wbhealth.repository.PacienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PacienteService {
     private final PacienteRepository pacienteRepository;
     private final ObjectMapper objectMapper;
 
-    public PacienteService(PacienteRepository pacienteRepository, ObjectMapper objectMapper){
-        this.pacienteRepository = pacienteRepository;
-        this.objectMapper = objectMapper;
-    }
-
     public List<PacienteOutputDTO> findAll() throws BancoDeDadosException {
         return pacienteRepository.findAll()
-                .stream().map(this::convertPacienteToOutput).toList();
+                .stream().map(paciente -> objectMapper.convertValue(paciente, PacienteOutputDTO.class))
+                .toList();
     }
 
     public PacienteOutputDTO findById(Integer idPaciente) throws BancoDeDadosException, EntityNotFound {
         Paciente pacienteEncontrado = pacienteRepository.findById(idPaciente);
-        return convertPacienteToOutput(pacienteEncontrado);
+        return objectMapper.convertValue(pacienteEncontrado, PacienteOutputDTO.class);
     }
 
     public PacienteOutputDTO save(PacienteInputDTO pacienteInput) throws BancoDeDadosException {
-        Paciente paciente = convertInputToPaciente(pacienteInput);
+        Paciente paciente = objectMapper.convertValue(pacienteInput, Paciente.class);
         Paciente novoPaciente = pacienteRepository.save(paciente);
-        return convertPacienteToOutput(novoPaciente);
+        return objectMapper.convertValue(novoPaciente, PacienteOutputDTO.class);
     }
 
     public PacienteOutputDTO update(Integer idPaciente, PacienteInputDTO pacienteInput)
             throws BancoDeDadosException, EntityNotFound {
-        Paciente pacienteModificado = convertInputToPaciente(pacienteInput);
+        Paciente pacienteModificado = objectMapper.convertValue(pacienteInput, Paciente.class);
         Paciente pacienteAtualizado = pacienteRepository.update(idPaciente, pacienteModificado);
-        return convertPacienteToOutput(pacienteAtualizado);
+        return objectMapper.convertValue(pacienteAtualizado, PacienteOutputDTO.class);
     }
 
     public void deleteById(Integer idPaciente) throws BancoDeDadosException, EntityNotFound {
@@ -52,29 +49,4 @@ public class PacienteService {
     /*public boolean buscarCpf(Paciente paciente) throws BancoDeDadosException {
         return pacienteRepository.buscarCpf(paciente);
     }*/
-
-    private Paciente convertInputToPaciente(PacienteInputDTO pacienteInput){
-        Paciente paciente = objectMapper.convertValue(pacienteInput, Paciente.class);
-        paciente.setNome(pacienteInput.getNome());
-        paciente.setCep(pacienteInput.getCep());
-        paciente.setDataNascimento(pacienteInput.getDataNascimento());
-        paciente.setCpf(pacienteInput.getCpf());
-        paciente.setSalarioMensal(pacienteInput.getSalarioMensal());
-        paciente.setIdHospital(pacienteInput.getIdHospital());
-        return paciente;
-    }
-
-    private PacienteOutputDTO convertPacienteToOutput(Paciente paciente){
-        return new PacienteOutputDTO(
-                paciente.getIdPessoa(),
-                paciente.getIdPaciente(),
-                paciente.getIdHospital(),
-                paciente.getNome(),
-                paciente.getCep(),
-                paciente.getDataNascimento(),
-                paciente.getCpf(),
-                paciente.getSalarioMensal(),
-                paciente.getEmail()
-        );
-    }
 }
