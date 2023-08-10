@@ -21,12 +21,12 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         try {
             conexao = ConexaoBancoDeDados.getConnection();
             final String QUERY_SQL = "SELECT * FROM PESSOA\n"
-                                    + "INNER JOIN PACIENTE\n"
-                                    + "ON PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA";
+                    + "INNER JOIN PACIENTE\n"
+                    + "ON PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA";
             Statement statement = conexao.createStatement();
             ResultSet resultSet = statement.executeQuery(QUERY_SQL);
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Paciente paciente = getPacienteFromResultSet(resultSet);
                 listaPacientes.add(paciente);
             }
@@ -47,24 +47,24 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         try {
             conexao = ConexaoBancoDeDados.getConnection();
             final String QUERY_SQL = "SELECT * FROM PACIENTE\n"
-                                    + "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? "
-                                    + "AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
+                    + "INNER JOIN PESSOA ON PACIENTE.ID_PACIENTE = ? "
+                    + "AND PESSOA.ID_PESSOA = PACIENTE.ID_PESSOA\n";
             PreparedStatement statement = conexao.prepareStatement(QUERY_SQL);
             statement.setInt(1, idPaciente);
             statement.executeQuery();
             ResultSet resultSet = statement.executeQuery();
 
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 paciente = getPacienteFromResultSet(resultSet);
             }
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             fecharConexaoComBancoDeDados(conexao);
         }
 
-        if(paciente == null)
+        if (paciente == null)
             throw new EntityNotFound("Paciente não encontrado!");
 
         return paciente;
@@ -84,8 +84,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             inserirNaTabelaPessoa(paciente, conexao, QUERY_PESSOA);
 
             final String QUERY_PACIENTE = "INSERT INTO PACIENTE\n"
-                                        + "(id_paciente, id_hospital, id_pessoa)\n"
-                                        + "VALUES(?, ?, ?)\n";
+                    + "(id_paciente, id_hospital, id_pessoa)\n"
+                    + "VALUES(?, ?, ?)\n";
             inserirNaTabelaPaciente(paciente, conexao, QUERY_PACIENTE);
 
             novoPaciente = findById(paciente.getIdPaciente());
@@ -109,13 +109,13 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             pacienteAtualizado = findById(idPaciente);
             conexao = ConexaoBancoDeDados.getConnection();
             final String UPDATE_QUERY = "UPDATE PESSOA SET \n"
-                                        + "nome = ?, "
-                                        + "cep = ?, "
-                                        + "data_nascimento = ?, "
-                                        + "cpf = ?, "
-                                        + "salario_mensal = ?, "
-                                        + "email = ?"
-                                        + "WHERE id_pessoa = ?";
+                    + "nome = ?, "
+                    + "cep = ?, "
+                    + "data_nascimento = ?, "
+                    + "cpf = ?, "
+                    + "salario_mensal = ?, "
+                    + "email = ?"
+                    + "WHERE id_pessoa = ?";
 
             PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);
             preparedStatement.setString(1, pacienteModificado.getNome());
@@ -148,7 +148,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             PreparedStatement stPaciente = conexao.prepareStatement(PACIENTE_QUERY);
             stPaciente.setInt(1, idPaciente);
             int resPaciente = stPaciente.executeUpdate();
-            if(resPaciente == 0)
+            if (resPaciente == 0)
                 return false;
 
             final String PESSOA_QUERY = "DELETE FROM PESSOA WHERE ID_PESSOA = ?";
@@ -157,7 +157,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             int resPessoa = stPessoa.executeUpdate();
 
             return resPessoa > 0;
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         } finally {
             fecharConexaoComBancoDeDados(conexao);
@@ -195,7 +195,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
         Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf,
-                                        salarioMensal, email, idHospital);
+                salarioMensal, email, idHospital);
 
         paciente.setEmail(email);
 
@@ -206,11 +206,11 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
     }
 
     private void fecharConexaoComBancoDeDados(Connection conexao) throws BancoDeDadosException {
-        try{
-            if(conexao != null){
+        try {
+            if (conexao != null) {
                 conexao.close();
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
         }
     }

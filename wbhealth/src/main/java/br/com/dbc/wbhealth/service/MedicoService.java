@@ -10,8 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MedicoService {
@@ -21,7 +20,7 @@ public class MedicoService {
     private ObjectMapper objectMapper;
 
     public MedicoService(MedicoRepository medicoRepository) {
-        this.medicoRepository=medicoRepository;
+        this.medicoRepository = medicoRepository;
     }
 
 //    public boolean buscarCpf(Medico medico) {
@@ -37,11 +36,11 @@ public class MedicoService {
 
     public MedicoOutputDTO save(MedicoInputDTO medicoInputDTO) {
         Medico medico = new Medico();
-        medico= objectMapper.convertValue(medicoInputDTO, Medico.class);
+        medico = objectMapper.convertValue(medicoInputDTO, Medico.class);
         MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
             Medico medicoAtualizado = medicoRepository.save(medico);
-            medicoOutputDTO=objectMapper.convertValue(medico, MedicoOutputDTO.class);
+            medicoOutputDTO = objectMapper.convertValue(medicoAtualizado, MedicoOutputDTO.class);
 //            String cpf = medicoInputDTO.getCpf().replaceAll("[^0-9]", "");
 //            if (cpf.length() != 11) {
 //                throw new Exception("CPF Invalido!");
@@ -70,15 +69,11 @@ public class MedicoService {
         return medicoOutputDTO;
     }
 
-    public ArrayList<MedicoOutputDTO> findAll() throws BancoDeDadosException {
-        ArrayList<Medico> listaMedico= medicoRepository.findAll();
-        ArrayList<MedicoOutputDTO> listaMedicoOutputDto = new ArrayList<>();
-
-        for (int i = 0; i< listaMedico.size(); i++){
-            listaMedicoOutputDto.add(objectMapper.convertValue(listaMedico.get(i), MedicoOutputDTO.class));
-        }
-
-        return listaMedicoOutputDto;
+    public List<MedicoOutputDTO> findAll() throws BancoDeDadosException {
+        return medicoRepository.findAll()
+                .stream()
+                .map(medico -> objectMapper.convertValue(medico, MedicoOutputDTO.class))
+                .toList();
     }
 
     public MedicoOutputDTO findById(Integer id) throws BancoDeDadosException, EntityNotFound {
@@ -89,7 +84,7 @@ public class MedicoService {
     public MedicoOutputDTO update(Integer idMedico, MedicoInputDTO medicoInputDTO) throws BancoDeDadosException, EntityNotFound {
         Medico medico = new Medico();
         try {
-            Medico medicoAux= medicoRepository.findAll().stream()
+            Medico medicoAux = medicoRepository.findAll().stream()
                     .filter(x -> x.getIdMedico() == idMedico)
                     .findFirst().orElseThrow(() -> new EntityNotFound("Id não encontrado"));
             medicoAux.setCpf(medicoInputDTO.getCpf());
@@ -109,6 +104,7 @@ public class MedicoService {
         }
         return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
+
     public String deletarPeloId(Integer id) throws EntityNotFound {
         String retorno = new String();
         try {

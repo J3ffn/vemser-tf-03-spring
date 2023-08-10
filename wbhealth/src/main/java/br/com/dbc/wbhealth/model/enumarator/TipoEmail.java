@@ -8,9 +8,18 @@ public enum TipoEmail {
 
     private String titulo;
 
-    TipoEmail(int codigo, String titulo){
+    TipoEmail(int codigo, String titulo) {
         this.codigo = codigo;
         this.titulo = titulo;
+    }
+
+    public static TipoEmail valueOf(int code) {
+        for (TipoEmail valor : TipoEmail.values()) {
+            if (valor.getCodigo() == code) {
+                return valor;
+            }
+        }
+        throw new IllegalArgumentException("Código inválido");
     }
 
     public int getCodigo() {
@@ -19,15 +28,6 @@ public enum TipoEmail {
 
     public String getTitulo() {
         return titulo;
-    }
-
-    public static TipoEmail valueOf(int code){
-        for (TipoEmail valor: TipoEmail.values()) {
-            if(valor.getCodigo() == code){
-                return valor;
-            }
-        }
-        throw new IllegalArgumentException("Código inválido");
     }
 
 }

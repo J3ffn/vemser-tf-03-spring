@@ -1,6 +1,5 @@
 package br.com.dbc.wbhealth.model.dto.medico;
 
-import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;

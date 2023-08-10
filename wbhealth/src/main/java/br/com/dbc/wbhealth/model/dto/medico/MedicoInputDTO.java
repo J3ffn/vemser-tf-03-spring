@@ -1,14 +1,10 @@
 package br.com.dbc.wbhealth.model.dto.medico;
 
-import br.com.dbc.wbhealth.model.entity.Pessoa;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -22,7 +18,7 @@ public class MedicoInputDTO {
     private String nome;
     @Schema(description = "Cep do medico", example = "12345678", required = true)
     @NotBlank
-    @Size(min =8, max=8)
+    @Size(min = 8, max = 8)
     private String cep;
     @Schema(description = "Data de nascimento do medico", example = "22-04-1995", required = true)
     @NotNull
@@ -39,7 +35,7 @@ public class MedicoInputDTO {
     private Integer idHospital;
     @Schema(description = "CRM do medico", example = "AM-7654321/82", required = true)
     @NotBlank
-    @Size(min=13, max=13)
+    @Size(min = 13, max = 13)
     private String crm;
     @NotBlank
     @Email

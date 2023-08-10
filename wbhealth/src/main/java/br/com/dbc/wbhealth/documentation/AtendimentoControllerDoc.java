@@ -7,7 +7,6 @@ import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,7 +78,7 @@ public interface AtendimentoControllerDoc {
     )
     @PutMapping("/{idAtendimento}")
     ResponseEntity<AtendimentoOutputDTO> alterarPeloId(@Positive(message = "Deve ser positivo") @PathVariable Integer idAtendimento,
-                                                              @Valid @RequestBody AtendimentoInputDTO atendimento) throws BancoDeDadosException, EntityNotFound, MessagingException;
+                                                       @Valid @RequestBody AtendimentoInputDTO atendimento) throws BancoDeDadosException, EntityNotFound, MessagingException;
 
     @Operation(summary = "Deletar um atendimento.", description = "Deleta um atendimento do banco de dados pelo seu ID.")
     @ApiResponses(

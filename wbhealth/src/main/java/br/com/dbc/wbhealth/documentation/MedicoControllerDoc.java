@@ -1,5 +1,6 @@
 package br.com.dbc.wbhealth.documentation;
 
+import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
@@ -10,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface MedicoControllerDoc {
     @Operation(summary = "Listar medicos", description = "Cria uma lista de OutputDTOs com todos os medicos cadastrados no sistema")
@@ -22,7 +23,7 @@ public interface MedicoControllerDoc {
             }
     )
     @GetMapping
-    public ResponseEntity<ArrayList<MedicoOutputDTO>> findAll ();
+    public ResponseEntity<List<MedicoOutputDTO>> findAll() throws BancoDeDadosException;
 
     @Operation(summary = "Retornar medico por id", description = "Retorna um DTO com os dados do medico cujo id corresponde ao id recebido por pathVariable.")
     @ApiResponses(
