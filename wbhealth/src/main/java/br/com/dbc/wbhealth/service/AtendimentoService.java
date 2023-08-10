@@ -8,7 +8,7 @@ import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Atendimento;
 import br.com.dbc.wbhealth.model.entity.Medico;
 import br.com.dbc.wbhealth.model.entity.Paciente;
-import br.com.dbc.wbhealth.model.enumarator.emails.TipoEmailAtendimento;
+import br.com.dbc.wbhealth.model.enumarator.TipoEmail;
 import br.com.dbc.wbhealth.repository.AtendimentoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +38,12 @@ public class AtendimentoService {
         this.hospitalService = hospitalService;
     }
 
-    private void enviarEmails(AtendimentoInputDTO atendimento, TipoEmailAtendimento tipo) throws MessagingException, BancoDeDadosException, EntityNotFound {
+    private void enviarEmails(AtendimentoInputDTO atendimento, TipoEmail tipo) throws MessagingException, BancoDeDadosException, EntityNotFound {
         Paciente paciente = objectMapper.convertValue(pacienteService.findById(atendimento.getIdPaciente()), Paciente.class);
-//        Medico medico = objectMapper.convertValue(medicoService.findById(atendimento.getIdMedico()), Medico.class);
+        Medico medico = objectMapper.convertValue(medicoService.findById(atendimento.getIdMedico()), Medico.class);
 
         emailService.sendEmailAtendimento(paciente, tipo);
-//        emailService.sendEmailAtendimento(medico, tipo);
+        emailService.sendEmailAtendimento(medico, tipo);
     }
 
     private void verificarIdentificadores(AtendimentoInputDTO atendimentoDeEntrada) throws BancoDeDadosException, EntityNotFound {
@@ -62,7 +62,7 @@ public class AtendimentoService {
         Atendimento atendimento = objectMapper.convertValue(atendimentoNovo, Atendimento.class);
         atendimento = atendimentoRepository.save(atendimento);
 
-        enviarEmails(atendimentoNovo, TipoEmailAtendimento.CONFIRMACAO);
+        enviarEmails(atendimentoNovo, TipoEmail.CONFIRMACAO);
         return objectMapper.convertValue(atendimento, AtendimentoOutputDTO.class);
     }
 
@@ -86,11 +86,12 @@ public class AtendimentoService {
 
     public AtendimentoOutputDTO update(Integer id, AtendimentoInputDTO atendimentoAtualizado) throws BancoDeDadosException, EntityNotFound, MessagingException {
         verificarIdentificadores(atendimentoAtualizado);
+
         Atendimento atendimentoConvertido = objectMapper.convertValue(atendimentoAtualizado, Atendimento.class);
         Atendimento atendimentoModificado = atendimentoRepository.update(id, atendimentoConvertido);
+        atendimentoModificado.setIdAtendimento(id);
 
-        enviarEmails(atendimentoAtualizado, TipoEmailAtendimento.ATUALIZACAO);
-
+        enviarEmails(atendimentoAtualizado, TipoEmail.ATUALIZACAO);
         return objectMapper.convertValue(atendimentoModificado, AtendimentoOutputDTO.class);
     }
 
@@ -100,7 +101,7 @@ public class AtendimentoService {
 
             atendimentoRepository.deleteById(id);
 
-            enviarEmails(atendimento, TipoEmailAtendimento.CANCELAMENTO);
+            enviarEmails(atendimento, TipoEmail.CANCELAMENTO);
 
         } catch (BancoDeDadosException | MessagingException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,6 @@
-package br.com.dbc.wbhealth.model.enumarator.emails;
+package br.com.dbc.wbhealth.model.enumarator;
 
-public enum TipoEmailAtendimento {
+public enum TipoEmail {
 
     CONFIRMACAO(0, "Confirmação de atendimento!"), ATUALIZACAO(1, "Alteração no atendimento realizada!"), CANCELAMENTO(2, "Atendimento cancelado!");
 
@@ -8,7 +8,7 @@ public enum TipoEmailAtendimento {
 
     private String titulo;
 
-    TipoEmailAtendimento(int codigo, String titulo){
+    TipoEmail(int codigo, String titulo){
         this.codigo = codigo;
         this.titulo = titulo;
     }
@@ -21,8 +21,8 @@ public enum TipoEmailAtendimento {
         return titulo;
     }
 
-    public static TipoEmailAtendimento valueOf(int code){
-        for (TipoEmailAtendimento valor: TipoEmailAtendimento.values()) {
+    public static TipoEmail valueOf(int code){
+        for (TipoEmail valor: TipoEmail.values()) {
             if(valor.getCodigo() == code){
                 return valor;
             }

@@ -113,8 +113,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                                         + "cep = ?, "
                                         + "data_nascimento = ?, "
                                         + "cpf = ?, "
-                                        + "salario_mensal = ? "
-                                        + "email = ?">>>>>>> develop
+                                        + "salario_mensal = ?, "
+                                        + "email = ?"
                                         + "WHERE id_pessoa = ?";
 
             PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);
@@ -123,7 +123,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             preparedStatement.setDate(3, Date.valueOf(pacienteModificado.getDataNascimento()));
             preparedStatement.setString(4, pacienteModificado.getCpf());
             preparedStatement.setDouble(5, pacienteModificado.getSalarioMensal());
-            preparedStatement.setString(6, pacienteAtualizado.getEmail());            
+            preparedStatement.setString(6, pacienteAtualizado.getEmail());
             preparedStatement.setInt(7, pacienteAtualizado.getIdPessoa());
 
             preparedStatement.executeUpdate();
@@ -181,33 +181,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         }
     }
 
-    /*public boolean buscarCpf(Paciente paciente) throws BancoDeDadosException {
-        Connection conexao = null;
-        boolean retorno = false;
-
-        try {
-            conexao = ConexaoBancoDeDados.getConnection();
-            final String QUERY = "SELECT * FROM PESSOA "
-                                + "WHERE cpf = ?";
-
-            PreparedStatement preparedStatement = conexao.prepareStatement(QUERY);
-            preparedStatement.setString(1, paciente.getCpf());
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
-                retorno = true;
-            }
-
-        }catch (SQLException e){
-            throw new BancoDeDadosException(e.getCause());
-        }finally {
-            fecharConexaoComBancoDeDados(conexao);
-        }
-
-        return retorno;
-    }*/
-
     private Paciente getPacienteFromResultSet(ResultSet resultSet) throws SQLException {
         Integer idPessoa = resultSet.getInt("id_pessoa");
         String nome = resultSet.getString("nome");
@@ -218,7 +191,6 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         String email = resultSet.getString("email");
         Integer idPaciente = resultSet.getInt("id_paciente");
         Integer idHospital = resultSet.getInt("id_hospital");
-        String email = resultSet.getString("email");
 
         String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
