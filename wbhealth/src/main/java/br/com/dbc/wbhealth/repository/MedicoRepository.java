@@ -101,7 +101,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
         try {
             con = ConexaoBancoDeDados.getConnection();
             Statement st = con.createStatement();
-
+            Medico medico = new Medico();
             String sql = "SELECT * FROM MEDICO\n" +
                     "INNER JOIN PESSOA\n" +
                     "ON PESSOA.ID_PESSOA = MEDICO.ID_PESSOA";
@@ -109,23 +109,16 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             ResultSet res = st.executeQuery(sql);
 
             while (res.next()){
-                Integer idPessoa = res.getInt("id_pessoa");
-                String nome = res.getString("nome");
-                String cep = res.getString("cep");
-                LocalDate data =   res.getDate("data_nascimento").toLocalDate();
-                String cpf = res.getString("cpf");
-                Double salarioMensal = res.getDouble("salario_mensal");
-                Integer idMedico = res.getInt("id_medico");
-                Integer idHospital = res.getInt("id_hospital");
-                String crm = res.getString("crm");
-                String email = res.getString("email");
-
-                String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-                Medico medico = new Medico(nome, cep, dataFormatada, cpf, salarioMensal, idHospital, crm, email);
-
-                medico.setIdPessoa(idPessoa);
-                medico.setIdMedico(idMedico);
+                medico.setIdPessoa(res.getInt("id_pessoa"));
+                medico.setNome(res.getString("nome"));
+                medico.setCep(res.getString("cep"));
+                medico.setDataNascimento(res.getDate("data_nascimento").toLocalDate());
+                medico.setCpf(res.getString("cpf"));
+                medico.setSalarioMensal(res.getDouble("salario_mensal"));
+                medico.setIdMedico(res.getInt("id_medico"));
+                medico.setIdHospital(res.getInt("id_hospital"));
+                medico.setCrm(res.getString("crm"));
+                medico.setEmail(res.getString("email"));
 
                 medicos.add(medico);
             }
@@ -158,26 +151,21 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
 
             ResultSet res = st.executeQuery();
             if (res.next()){
-                Integer idPessoa = res.getInt("id_pessoa");
-                String nome = res.getString("nome");
-                String cep = res.getString("cep");
-                LocalDate data =   res.getDate("data_nascimento").toLocalDate();
-                String cpf = res.getString("cpf");
-                Double salarioMensal = res.getDouble("salario_mensal");
-                Integer idMedico = res.getInt("id_medico");
-                Integer idHospital = res.getInt("id_hospital");
-                String crm = res.getString("crm");
-                String email = res.getString("email");
-
-                String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-
-                medico = new Medico(nome,cep, dataFormatada, cpf, salarioMensal, idHospital, crm, email);
+                medico.setIdPessoa(res.getInt("id_pessoa"));
+                medico.setNome(res.getString("nome"));
+                medico.setCep(res.getString("cep"));
+                medico.setDataNascimento(res.getDate("data_nascimento").toLocalDate());
+                medico.setCpf(res.getString("cpf"));
+                medico.setSalarioMensal(res.getDouble("salario_mensal"));
+                medico.setIdMedico(res.getInt("id_medico"));
+                medico.setIdHospital(res.getInt("id_hospital"));
+                medico.setCrm(res.getString("crm"));
+                medico.setEmail(res.getString("email"));
 
                 if(medico.equals(null)){
                     throw new EntityNotFound("Medico não encontrado");
                 }
-                medico.setIdPessoa(idPessoa);
-                medico.setIdMedico(idMedico);
+
             }
 
         }catch (SQLException e) {
