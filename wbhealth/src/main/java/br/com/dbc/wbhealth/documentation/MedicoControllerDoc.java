@@ -23,7 +23,7 @@ public interface MedicoControllerDoc {
             }
     )
     @GetMapping
-    public ResponseEntity<List<MedicoOutputDTO>> findAll () throws BancoDeDadosException;
+    public ResponseEntity<List<MedicoOutputDTO>> findAll() throws BancoDeDadosException;
 
     @Operation(summary = "Retornar medico por id", description = "Retorna um DTO com os dados do medico cujo id corresponde ao id recebido por pathVariable.")
     @ApiResponses(

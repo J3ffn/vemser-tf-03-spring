@@ -5,11 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
-import java.time.LocalDate;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,6 +29,7 @@ public class Medico extends Pessoa implements Pagamento {
     public void setCrm(String crm) {
         this.crm = crm;
     }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -49,9 +45,6 @@ public class Medico extends Pessoa implements Pagamento {
         Double taxaInss = 0.14;
         return getSalarioMensal() - getSalarioMensal() * taxaInss;
     }
-
-
-
 
 
 }

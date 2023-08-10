@@ -1,7 +1,9 @@
 package br.com.dbc.wbhealth.model.entity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 

@@ -25,43 +25,42 @@ public class MedicoController implements MedicoControllerDoc {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public MedicoController(MedicoService medicoService){
-        this.medicoService=medicoService;
+    public MedicoController(MedicoService medicoService) {
+        this.medicoService = medicoService;
     }
 
 
-
     @GetMapping
-    public ResponseEntity<List<MedicoOutputDTO>> findAll () throws BancoDeDadosException {
-            return ResponseEntity.status(HttpStatus.OK).body(medicoService.findAll());
-        }
+    public ResponseEntity<List<MedicoOutputDTO>> findAll() throws BancoDeDadosException {
+        return ResponseEntity.status(HttpStatus.OK).body(medicoService.findAll());
+    }
 
     @GetMapping("{id}")
-    public ResponseEntity<MedicoOutputDTO> findById(@PathVariable int id){
+    public ResponseEntity<MedicoOutputDTO> findById(@PathVariable int id) {
         MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
-            medicoOutputDTO= medicoService.findById(id);
+            medicoOutputDTO = medicoService.findById(id);
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.OK).body(medicoOutputDTO);
     }
 
     @PostMapping()
-    public ResponseEntity<MedicoOutputDTO> save(@Valid @RequestBody MedicoInputDTO medicoInputDTO){
+    public ResponseEntity<MedicoOutputDTO> save(@Valid @RequestBody MedicoInputDTO medicoInputDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(medicoService.save(medicoInputDTO));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<MedicoOutputDTO> update(@PathVariable int id, @Valid @RequestBody MedicoInputDTO medicoInputDTO){
+    public ResponseEntity<MedicoOutputDTO> update(@PathVariable int id, @Valid @RequestBody MedicoInputDTO medicoInputDTO) {
         MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
             medicoOutputDTO = medicoService.update(id, medicoInputDTO);
         } catch (BancoDeDadosException e) {
             throw new RuntimeException(e);
-        } catch (Exception e ){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.OK).body(medicoOutputDTO);

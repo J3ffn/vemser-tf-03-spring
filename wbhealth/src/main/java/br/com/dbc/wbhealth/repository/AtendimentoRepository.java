@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +99,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
 
             atendimentos = pupuleAtendimentos(st, sql);
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
 
         } finally {
@@ -123,13 +122,13 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
             con = ConexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM ATENDIMENTO "
-                       + "WHERE id_atendimento = " + id;
+                    + "WHERE id_atendimento = " + id;
 
             Statement st = con.prepareStatement(sql);
 
             List<Atendimento> lista = this.pupuleAtendimentos(st, sql);
 
-            if(lista.isEmpty()) {
+            if (lista.isEmpty()) {
                 throw new EntityNotFound("Id inválido!");
             }
 
@@ -211,7 +210,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
             con = ConexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM ATENDIMENTO " +
-                         "WHERE id_atendimento = ?";
+                    "WHERE id_atendimento = ?";
 
             PreparedStatement st = con.prepareStatement(sql);
 
@@ -222,7 +221,7 @@ public class AtendimentoRepository implements Repositorio<Integer, Atendimento> 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause());
 
-        }  finally {
+        } finally {
             try {
                 if (con != null) {
                     con.close();

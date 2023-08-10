@@ -2,7 +2,6 @@ package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
-import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Medico;
@@ -11,8 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +20,7 @@ public class MedicoService {
     private ObjectMapper objectMapper;
 
     public MedicoService(MedicoRepository medicoRepository) {
-        this.medicoRepository=medicoRepository;
+        this.medicoRepository = medicoRepository;
     }
 
 //    public boolean buscarCpf(Medico medico) {
@@ -39,11 +36,11 @@ public class MedicoService {
 
     public MedicoOutputDTO save(MedicoInputDTO medicoInputDTO) {
         Medico medico = new Medico();
-        medico= objectMapper.convertValue(medicoInputDTO, Medico.class);
+        medico = objectMapper.convertValue(medicoInputDTO, Medico.class);
         MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
             Medico medicoAtualizado = medicoRepository.save(medico);
-            medicoOutputDTO=objectMapper.convertValue(medicoAtualizado, MedicoOutputDTO.class);
+            medicoOutputDTO = objectMapper.convertValue(medicoAtualizado, MedicoOutputDTO.class);
 //            String cpf = medicoInputDTO.getCpf().replaceAll("[^0-9]", "");
 //            if (cpf.length() != 11) {
 //                throw new Exception("CPF Invalido!");
@@ -87,7 +84,7 @@ public class MedicoService {
     public MedicoOutputDTO update(Integer idMedico, MedicoInputDTO medicoInputDTO) throws BancoDeDadosException, EntityNotFound {
         Medico medico = new Medico();
         try {
-            Medico medicoAux= medicoRepository.findAll().stream()
+            Medico medicoAux = medicoRepository.findAll().stream()
                     .filter(x -> x.getIdMedico() == idMedico)
                     .findFirst().orElseThrow(() -> new EntityNotFound("Id não encontrado"));
             medicoAux.setCpf(medicoInputDTO.getCpf());
@@ -101,9 +98,13 @@ public class MedicoService {
 
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
+
+        } catch (EntityNotFound e) {
+            throw new EntityNotFound("Medico não encontrado!");
         }
         return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
+
     public String deletarPeloId(Integer id) throws EntityNotFound {
         String retorno = new String();
         try {
@@ -112,7 +113,7 @@ public class MedicoService {
                 retorno = "Medico deletado com sucesso.";
             }
 
-        } catch (BancoDeDadosException e) {
+        } catch (BancoDeDadosException | EntityNotFound e) {
             e.printStackTrace();
         }
         return retorno;
