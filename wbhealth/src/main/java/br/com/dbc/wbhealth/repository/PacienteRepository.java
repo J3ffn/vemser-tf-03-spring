@@ -113,7 +113,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                                         + "cep = ?, "
                                         + "data_nascimento = ?, "
                                         + "cpf = ?, "
-                                        + "salario_mensal = ? "
+                                        + "salario_mensal = ?, "
                                         + "email = ?"
                                         + "WHERE id_pessoa = ?";
 
