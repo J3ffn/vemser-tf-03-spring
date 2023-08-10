@@ -2,8 +2,6 @@ package br.com.dbc.wbhealth.model.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.br.CPF;
-import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -13,36 +11,27 @@ import java.time.format.DateTimeFormatter;
 public abstract class Pessoa {
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    @Positive
     private Integer idPessoa;
-    @NotBlank
+
     private String nome;
-    @NotBlank
-    @Size(min = 8, max = 8)
+
     private String cep;
-    @NotNull
-    @PastOrPresent
+
     private LocalDate dataNascimento;
-    @CPF
+
     private String cpf;
-    @PositiveOrZero
+
     private Double salarioMensal;
-    @Email
-    @NotBlank
+
     private String email;
 
-//    public Pessoa() {
-//    }
-
-    public Pessoa(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal) {
+    public Pessoa(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, String email) {
         this.nome = nome;
         this.cep = cep;
         this.dataNascimento = LocalDate.parse(dataNascimento, FORMAT);
         this.cpf = cpf;
         this.salarioMensal = salarioMensal;
-    }
-
-    public Pessoa(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, String email) {
+        this.email = email;
     }
 
 //    public Pessoa(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal) {

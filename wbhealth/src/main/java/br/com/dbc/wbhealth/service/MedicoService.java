@@ -1,6 +1,8 @@
 package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
+import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Medico;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MedicoService {
@@ -23,9 +26,9 @@ public class MedicoService {
         this.medicoRepository=medicoRepository;
     }
 
-    public boolean buscarCpf(Medico medico) {
-        return medicoRepository.buscarCpf(medico);
-    }
+//    public boolean buscarCpf(Medico medico) {
+//        return medicoRepository.buscarCpf(medico);
+//    }
 
 
 //    objectMapper.registerModule(new JavaTimeModule());
@@ -69,28 +72,24 @@ public class MedicoService {
         return medicoOutputDTO;
     }
 
-    public ArrayList<MedicoOutputDTO> findAll() throws BancoDeDadosException {
-        ArrayList<Medico> listaMedico= medicoRepository.findAll();
-        ArrayList<MedicoOutputDTO> listaMedicoOutputDto = new ArrayList<>();
-
-        for (int i = 0; i< listaMedico.size(); i++){
-            listaMedicoOutputDto.add(objectMapper.convertValue(listaMedico.get(i), MedicoOutputDTO.class));
-        }
-
-        return listaMedicoOutputDto;
+    public List<MedicoOutputDTO> findAll() throws BancoDeDadosException {
+        return medicoRepository.findAll()
+                .stream()
+                .map(medico -> objectMapper.convertValue(medico, MedicoOutputDTO.class))
+                .toList();
     }
 
-    public MedicoOutputDTO findById(Integer id) throws BancoDeDadosException {
+    public MedicoOutputDTO findById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Medico medico = medicoRepository.findById(id);
         return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
 
-    public MedicoOutputDTO update(Integer idMedico, MedicoInputDTO medicoInputDTO) throws BancoDeDadosException {
+    public MedicoOutputDTO update(Integer idMedico, MedicoInputDTO medicoInputDTO) throws BancoDeDadosException, EntityNotFound {
         Medico medico = new Medico();
         try {
             Medico medicoAux= medicoRepository.findAll().stream()
                     .filter(x -> x.getIdMedico() == idMedico)
-                    .findFirst().orElseThrow(() -> new BancoDeDadosException (new Throwable("Id não encontrado")));
+                    .findFirst().orElseThrow(() -> new EntityNotFound("Id não encontrado"));
             medicoAux.setCpf(medicoInputDTO.getCpf());
             medicoAux.setCrm(medicoInputDTO.getCrm());
             medicoAux.setCep(medicoInputDTO.getCep());
@@ -105,7 +104,7 @@ public class MedicoService {
         }
         return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
-    public String deletarPeloId(Integer id) {
+    public String deletarPeloId(Integer id) throws EntityNotFound {
         String retorno = new String();
         try {
             boolean removeu = medicoRepository.deleteById(id);

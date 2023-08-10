@@ -1,20 +1,22 @@
 -- Hospital --
+
+--
 INSERT INTO Hospital(id_hospital, nome)
 VALUES(1, 'WB Health');
 
 -- Pessoa --
-INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)
-VALUES(seq_pessoa.nextval, 'Gertrudes', 99999999, TO_DATE('11-02-1949','dd-MM-yyyy'), '33333333333', 0.00);
+INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)
+VALUES(seq_pessoa.nextval, 'Gertrudes', 99999999, TO_DATE('11-02-1949','dd-MM-yyyy'), '33333333333', 0.00, 'Gertrudes@fulano.com.br');
 
-INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)
-VALUES(seq_pessoa.nextval, 'Mauricio', 99998999, TO_DATE('12-04-2022','dd-MM-yyyy'), '44444444444', 1000.30);
+INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)
+VALUES(seq_pessoa.nextval, 'Mauricio', 99998999, TO_DATE('12-04-2022','dd-MM-yyyy'), '44444444444', 1000.30, 'Mauricio@fulano.com.br');
 
-INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)
-VALUES(seq_pessoa.nextval, 'Larissa', 99988999, TO_DATE('22-11-1999','dd-MM-yyyy'), '88888888888', 3000.00);
+INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)
+VALUES(seq_pessoa.nextval, 'Larissa', 99988999, TO_DATE('22-11-1999','dd-MM-yyyy'), '88888888888', 3000.00, 'larissa@fulano.com.br');
 
-INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal)
-VALUES(seq_pessoa.nextval, 'Marcos', 99988999, TO_DATE('22-11-1999','dd-MM-yyyy'), '77777777777', 300.10);
 
+INSERT INTO Pessoa(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)
+VALUES(seq_pessoa.nextval, 'Marcos', 97788779, TO_DATE('22-11-1999','dd-MM-yyyy'), '77777777779', 300.10, 'marcos@fulano.com.br');
 -- Paciente --
 INSERT INTO PACIENTE (id_paciente, id_hospital, id_pessoa)
 VALUES (SEQ_PACIENTE.nextval, 1, 1);

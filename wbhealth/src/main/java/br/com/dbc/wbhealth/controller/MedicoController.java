@@ -2,6 +2,7 @@ package br.com.dbc.wbhealth.controller;
 
 import br.com.dbc.wbhealth.documentation.MedicoControllerDoc;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.service.MedicoService;
@@ -13,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.util.List;
 
 @Validated
 @RestController
@@ -31,17 +32,8 @@ public class MedicoController implements MedicoControllerDoc {
 
 
     @GetMapping
-    public ResponseEntity<ArrayList<MedicoOutputDTO>> findAll () {
-            ArrayList<MedicoOutputDTO> medicoOutputDTOS = new ArrayList<>();
-            try {
-                medicoOutputDTOS= medicoService.findAll();
-            } catch (BancoDeDadosException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(medicoOutputDTOS);
+    public ResponseEntity<List<MedicoOutputDTO>> findAll () throws BancoDeDadosException {
+            return ResponseEntity.status(HttpStatus.OK).body(medicoService.findAll());
         }
 
     @GetMapping("{id}")
@@ -76,7 +68,7 @@ public class MedicoController implements MedicoControllerDoc {
     }
 
     @DeleteMapping("{id}")
-    public String deleteById(@PathVariable int id){
+    public String deleteById(@PathVariable int id) throws EntityNotFound {
         return medicoService.deletarPeloId(id);
     }
 }

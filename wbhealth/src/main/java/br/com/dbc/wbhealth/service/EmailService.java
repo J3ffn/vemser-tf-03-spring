@@ -27,7 +27,8 @@ public class EmailService {
 
     private final Configuration fmConfiguration;
 
-    private String from = "Jefferson Izaquiel <jefferson.izaquiel@dbccompany.com.br>";
+    @Value("${spring.mail.username}")
+    private String from;
 
     @Value("${spring.mail.username}")
     private String emailSuporte;
@@ -61,13 +62,13 @@ public class EmailService {
 
         StringBuilder estruturaDaMensagem = new StringBuilder();
 
-        if (TipoEmailAtendimento.CONFIRMACAO.getCodigo() == tipoEmail.getCodigo()) {
+//        if (TipoEmailAtendimento.CONFIRMACAO.equals(tipoEmail)) {
             switch (tipoEmail) {
                 case CONFIRMACAO -> estruturaDaMensagem.append("Seu atendimento foi confirmado!");
                 case ATUALIZACAO -> estruturaDaMensagem.append("Seu atendimento foi atulizado!");
                 case CANCELAMENTO-> estruturaDaMensagem.append("Seu atendimento foi desmarcado!");
             }
-        }
+//        }
 
         dados.put("mensagem", estruturaDaMensagem.toString());
 
