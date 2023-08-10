@@ -9,13 +9,9 @@ public enum TipoDeAtendimento {
         this.codigo = codigo;
     }
 
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public static TipoDeAtendimento valueOf(int code){
-        for (TipoDeAtendimento valor: TipoDeAtendimento.values()) {
-            if(valor.getCodigo() == code){
+    public static TipoDeAtendimento valueOf(int code) {
+        for (TipoDeAtendimento valor : TipoDeAtendimento.values()) {
+            if (valor.getCodigo() == code) {
                 return valor;
             }
         }
@@ -23,14 +19,17 @@ public enum TipoDeAtendimento {
     }
 
     public static TipoDeAtendimento getTipo(String tipo) {
-        for (TipoDeAtendimento valor: TipoDeAtendimento.values()) {
-            if(valor.name().equals(tipo)){
+        for (TipoDeAtendimento valor : TipoDeAtendimento.values()) {
+            if (valor.name().equals(tipo)) {
                 return valor;
             }
         }
         throw new IllegalArgumentException("Código inválido");
     }
 
+    public int getCodigo() {
+        return codigo;
+    }
 
 
 }

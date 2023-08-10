@@ -5,26 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
-import java.time.LocalDate;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Medico extends Pessoa implements Pagamento {
-    @Positive
-    private Integer idPessoa;
-    @Positive
-    private Integer idHospital;
-    @Positive
-    private Integer idMedico;
-    @NotBlank
-    @Size(min=13, max=13)
-    private String crm;
 
+    private Integer idHospital;
+    private Integer idMedico;
+    private String crm;
 
     public Medico(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, Integer idHospital, String crm, String email) {
         super(nome, cep, dataNascimento, cpf, salarioMensal, email);
@@ -40,6 +29,7 @@ public class Medico extends Pessoa implements Pagamento {
     public void setCrm(String crm) {
         this.crm = crm;
     }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -56,13 +46,5 @@ public class Medico extends Pessoa implements Pagamento {
         return getSalarioMensal() - getSalarioMensal() * taxaInss;
     }
 
-    @Override
-    public Integer getIdPessoa() {
-        return idPessoa;
-    }
 
-    @Override
-    public void setIdPessoa(Integer idPessoa) {
-        this.idPessoa = idPessoa;
-    }
 }

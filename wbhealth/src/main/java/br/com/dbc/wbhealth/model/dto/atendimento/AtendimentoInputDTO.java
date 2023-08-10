@@ -1,11 +1,9 @@
 package br.com.dbc.wbhealth.model.dto.atendimento;
 
-import br.com.dbc.wbhealth.model.enumarator.TipoDeAtendimento;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.FutureOrPresent;

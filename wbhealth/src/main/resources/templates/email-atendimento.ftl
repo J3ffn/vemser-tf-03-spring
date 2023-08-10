@@ -16,9 +16,12 @@
 <table width="75%" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td align="center" valign="top" bgcolor="#838383"
-            style="background-color: #0078ff">
-            <br> <br>
+            style="background-color: #14475c">
+
+            <br> <h2 style="color: #fff; font-size: 30px;">HBHealth</h2>
+
             <table width="84%" cellspacing="0" cellpadding="0">
+
                 <tr>
                     <td align="center" valign="op" bgcolor="#385385"
                         style="border: 0px solid transparent;
@@ -37,16 +40,21 @@ backgrily: Arial, Helvetica, sans-serif; font-size: 13px; color: #000000; paddin
                         </div>
                         <div style="font-size: 24px; color:black;">
                             <br>
-                            <br>
                             <b>Qualquer dúvida é só contatar o suporte pelo e-mail ${emailSuporte}</b>
                             <br>
                             <br>
-                            <b>Att, <br>
-                                Sistema.</b>
+
                         </div>
+
                     </td>
+
                 </tr>
+
             </table>
+
+            <br>
+            <b style="font-size: 20px;">Att, <br>
+                Sistema.</b>
             <br> <br></td>
     </tr>
 </table>
