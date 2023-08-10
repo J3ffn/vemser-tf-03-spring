@@ -35,16 +35,16 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
     @Override
     public Medico save(Medico medico) throws BancoDeDadosException {
         Connection con = null;
-        Medico medicoAtualizado= new Medico();
+        Medico medicoAtualizado;
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            Integer proximoPessoaId = this.getProximoId(con, "seq_pessoa.nextval");
+            Integer proximoPessoaId = getProximoId(con, "seq_pessoa.nextval");
             medico.setIdPessoa(proximoPessoaId);
 
-            String sqlPessoa = "INSERT INTO Pessoa\n" +
-                    "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)\n" +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?)\n";
+            final String sqlPessoa = "INSERT INTO PESSOA\n"
+                    + "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)\n"
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stPesssoa = con.prepareStatement(sqlPessoa);
 
@@ -61,21 +61,21 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
 
             if (pessoasInseridas == 0) throw new SQLException("Ocorreu um erro ao inserir!");
 
-            Integer proximoMedicoId = this.getProximoId(con, "seq_medico.nextval");
+            Integer proximoMedicoId = getProximoId(con, "seq_medico.nextval");
             medico.setIdMedico(proximoMedicoId);
 
             String sql = "INSERT INTO Medico\n" +
-                    "(id_medico, id_hospital, id_pessoa, crm)\n" +
+                    "(id_pessoa, id_medico, id_hospital, crm)\n" +
                     "VALUES(?, ?, ?, ?)\n";
 
             PreparedStatement stMedico = con.prepareStatement(sql);
-            stMedico.setInt(1, medico.getIdMedico());
-            stMedico.setInt(2, 1);
-            stMedico.setInt(3, medico.getIdPessoa());
+            stMedico.setInt(1, medico.getIdPessoa());
+            stMedico.setInt(2, medico.getIdMedico());
+            stMedico.setInt(3, 1);
             stMedico.setString(4, medico.getCrm());
 
             int res = stMedico.executeUpdate();
-            medicoAtualizado = findById(proximoMedicoId);
+            medico = findById(medico.getIdMedico());
 
         }catch (BancoDeDadosException e) {
             e.getLocalizedMessage();
@@ -91,7 +91,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
                 e.printStackTrace();
             }
         }
-        return medicoAtualizado;
+        return medico;
     }
 
     @Override

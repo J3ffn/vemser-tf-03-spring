@@ -43,7 +43,7 @@ public class MedicoService {
         MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
             Medico medicoAtualizado = medicoRepository.save(medico);
-            medicoOutputDTO=objectMapper.convertValue(medico, MedicoOutputDTO.class);
+            medicoOutputDTO=objectMapper.convertValue(medicoAtualizado, MedicoOutputDTO.class);
 //            String cpf = medicoInputDTO.getCpf().replaceAll("[^0-9]", "");
 //            if (cpf.length() != 11) {
 //                throw new Exception("CPF Invalido!");

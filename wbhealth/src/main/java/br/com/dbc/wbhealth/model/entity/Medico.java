@@ -15,16 +15,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class Medico extends Pessoa implements Pagamento {
-    @Positive
-    private Integer idPessoa;
-    @Positive
-    private Integer idHospital;
-    @Positive
-    private Integer idMedico;
-    @NotBlank
-    @Size(min=13, max=13)
-    private String crm;
 
+    private Integer idHospital;
+    private Integer idMedico;
+    private String crm;
 
     public Medico(String nome, String cep, String dataNascimento, String cpf, Double salarioMensal, Integer idHospital, String crm, String email) {
         super(nome, cep, dataNascimento, cpf, salarioMensal, email);
@@ -56,13 +50,8 @@ public class Medico extends Pessoa implements Pagamento {
         return getSalarioMensal() - getSalarioMensal() * taxaInss;
     }
 
-    @Override
-    public Integer getIdPessoa() {
-        return idPessoa;
-    }
 
-    @Override
-    public void setIdPessoa(Integer idPessoa) {
-        this.idPessoa = idPessoa;
-    }
+
+
+
 }
