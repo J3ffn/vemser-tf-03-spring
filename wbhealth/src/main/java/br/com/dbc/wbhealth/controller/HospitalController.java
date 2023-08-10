@@ -1,5 +1,6 @@
 package br.com.dbc.wbhealth.controller;
 
+import br.com.dbc.wbhealth.documentation.HospitalControllerDoc;
 import br.com.dbc.wbhealth.model.dto.hospital.HospitalOutputDTO;
 import br.com.dbc.wbhealth.model.dto.hospital.HospitalInputDTO;
 import br.com.dbc.wbhealth.service.HospitalService;
@@ -15,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/hospital")
 @Validated
-public class HospitalController{
+public class HospitalController implements HospitalControllerDoc {
 
     private final HospitalService hospitalService;
 

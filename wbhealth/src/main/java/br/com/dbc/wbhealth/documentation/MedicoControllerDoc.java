@@ -1,5 +1,6 @@
 package br.com.dbc.wbhealth.documentation;
 
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,5 +67,5 @@ public interface MedicoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    public String deleteById(@PathVariable int id);
+    public String deleteById(@PathVariable int id) throws EntityNotFound;
 }

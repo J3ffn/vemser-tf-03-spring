@@ -2,6 +2,7 @@ package br.com.dbc.wbhealth.controller;
 
 import br.com.dbc.wbhealth.documentation.MedicoControllerDoc;
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.service.MedicoService;
@@ -76,7 +77,7 @@ public class MedicoController implements MedicoControllerDoc {
     }
 
     @DeleteMapping("{id}")
-    public String deleteById(@PathVariable int id){
+    public String deleteById(@PathVariable int id) throws EntityNotFound {
         return medicoService.deletarPeloId(id);
     }
 }

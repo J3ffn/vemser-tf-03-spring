@@ -40,4 +40,7 @@ public class PacienteInputDTO {
     @Positive
     @Schema(description = "Identificador do hospital que fornece o atendimento", required = true)
     private Integer idHospital;
+    @NotBlank
+    @Email
+    private String email;
 }

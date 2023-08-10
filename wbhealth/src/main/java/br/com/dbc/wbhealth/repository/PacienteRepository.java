@@ -113,8 +113,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                                         + "cep = ?, "
                                         + "data_nascimento = ?, "
                                         + "cpf = ?, "
-                                        + "salario_mensal = ?, "
-                                        + "email = ? "
+                                        + "salario_mensal = ? "
+                                        + "email = ?">>>>>>> develop
                                         + "WHERE id_pessoa = ?";
 
             PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);
@@ -123,7 +123,7 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
             preparedStatement.setDate(3, Date.valueOf(pacienteModificado.getDataNascimento()));
             preparedStatement.setString(4, pacienteModificado.getCpf());
             preparedStatement.setDouble(5, pacienteModificado.getSalarioMensal());
-            preparedStatement.setString(6, pacienteModificado.getEmail());
+            preparedStatement.setString(6, pacienteAtualizado.getEmail());            
             preparedStatement.setInt(7, pacienteAtualizado.getIdPessoa());
 
             preparedStatement.executeUpdate();

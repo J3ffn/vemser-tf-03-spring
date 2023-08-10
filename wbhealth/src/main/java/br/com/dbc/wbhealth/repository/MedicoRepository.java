@@ -44,7 +44,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
 
             String sqlPessoa = "INSERT INTO Pessoa\n" +
                     "(id_pessoa, nome, cep, data_nascimento, cpf, salario_mensal, email)\n" +
-                    "VALUES(?, ?, ?, ?, ?, ?)\n";
+                    "VALUES(?, ?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stPesssoa = con.prepareStatement(sqlPessoa);
 
