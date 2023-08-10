@@ -1,6 +1,7 @@
 package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
+import br.com.dbc.wbhealth.exceptions.EntityNotFound;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Medico;
@@ -23,9 +24,9 @@ public class MedicoService {
         this.medicoRepository=medicoRepository;
     }
 
-    public boolean buscarCpf(Medico medico) {
-        return medicoRepository.buscarCpf(medico);
-    }
+//    public boolean buscarCpf(Medico medico) {
+//        return medicoRepository.buscarCpf(medico);
+//    }
 
 
 //    objectMapper.registerModule(new JavaTimeModule());
@@ -80,12 +81,12 @@ public class MedicoService {
         return listaMedicoOutputDto;
     }
 
-    public MedicoOutputDTO findById(Integer id) throws BancoDeDadosException {
+    public MedicoOutputDTO findById(Integer id) throws BancoDeDadosException, EntityNotFound {
         Medico medico = medicoRepository.findById(id);
         return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
 
-    public MedicoOutputDTO update(Integer idMedico, MedicoInputDTO medicoInputDTO) throws BancoDeDadosException {
+    public MedicoOutputDTO update(Integer idMedico, MedicoInputDTO medicoInputDTO) throws BancoDeDadosException, EntityNotFound {
         Medico medico = new Medico();
         try {
             Medico medicoAux= medicoRepository.findAll().stream()
@@ -102,6 +103,9 @@ public class MedicoService {
 
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
+
+        } catch (EntityNotFound e) {
+            throw new EntityNotFound("Medico não encontrado!");
         }
         return objectMapper.convertValue(medico, MedicoOutputDTO.class);
     }
@@ -113,7 +117,7 @@ public class MedicoService {
                 retorno = "Medico deletado com sucesso.";
             }
 
-        } catch (BancoDeDadosException e) {
+        } catch (BancoDeDadosException | EntityNotFound e) {
             e.printStackTrace();
         }
         return retorno;

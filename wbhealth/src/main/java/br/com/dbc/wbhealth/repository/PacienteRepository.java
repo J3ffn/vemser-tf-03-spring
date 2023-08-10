@@ -215,10 +215,13 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
         Double salarioMensal = resultSet.getDouble("salario_mensal");
         Integer idPaciente = resultSet.getInt("id_paciente");
         Integer idHospital = resultSet.getInt("id_hospital");
+        String email = resultSet.getString("email");
 
         String dataFormatada = data.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 
         Paciente paciente = new Paciente(nome, cep, dataFormatada, cpf, salarioMensal, idHospital);
+
+        paciente.setEmail(email);
 
         paciente.setIdPessoa(idPessoa);
         paciente.setIdPaciente(idPaciente);

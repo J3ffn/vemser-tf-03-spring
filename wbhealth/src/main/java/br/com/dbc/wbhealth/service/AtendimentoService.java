@@ -40,10 +40,10 @@ public class AtendimentoService {
 
     private void enviarEmails(AtendimentoInputDTO atendimento, TipoEmailAtendimento tipo) throws MessagingException, BancoDeDadosException, EntityNotFound {
         Paciente paciente = objectMapper.convertValue(pacienteService.findById(atendimento.getIdPaciente()), Paciente.class);
-        Medico medico = objectMapper.convertValue(medicoService.findById(atendimento.getIdMedico()), Medico.class);
+//        Medico medico = objectMapper.convertValue(medicoService.findById(atendimento.getIdMedico()), Medico.class);
 
         emailService.sendEmailAtendimento(paciente, tipo);
-        emailService.sendEmailAtendimento(medico, tipo);
+//        emailService.sendEmailAtendimento(medico, tipo);
     }
 
     private void verificarIdentificadores(AtendimentoInputDTO atendimentoDeEntrada) throws BancoDeDadosException, EntityNotFound {

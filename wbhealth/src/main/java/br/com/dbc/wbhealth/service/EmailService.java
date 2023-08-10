@@ -65,7 +65,7 @@ public class EmailService {
             switch (tipoEmail) {
                 case CONFIRMACAO -> estruturaDaMensagem.append("Seu atendimento foi confirmado!");
                 case ATUALIZACAO -> estruturaDaMensagem.append("Seu atendimento foi atulizado!");
-                case CANCELAMENTO-> estruturaDaMensagem.append("Seu atendimento foi desmarcado!");
+                case CANCELAMENTO -> estruturaDaMensagem.append("Seu atendimento foi desmarcado!");
             }
         }
 

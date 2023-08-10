@@ -2,7 +2,7 @@ package br.com.dbc.wbhealth.model.enumarator.emails;
 
 public enum TipoEmailAtendimento {
 
-    CONFIRMACAO(0, "Confirmação de atendimento!"), ATUALIZACAO(1, "Alteração no atendimento realizada!"), CANCELAMENTO(2, "");
+    CONFIRMACAO(0, "Confirmação de atendimento!"), ATUALIZACAO(1, "Alteração no atendimento realizada!"), CANCELAMENTO(2, "Atendimento cancelado!");
 
     private int codigo;
 
