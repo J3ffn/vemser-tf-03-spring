@@ -2,6 +2,7 @@ package br.com.dbc.wbhealth.service;
 
 import br.com.dbc.wbhealth.exceptions.BancoDeDadosException;
 import br.com.dbc.wbhealth.exceptions.EntityNotFound;
+import br.com.dbc.wbhealth.model.dto.atendimento.AtendimentoOutputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoInputDTO;
 import br.com.dbc.wbhealth.model.dto.medico.MedicoOutputDTO;
 import br.com.dbc.wbhealth.model.entity.Medico;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MedicoService {
@@ -70,15 +72,11 @@ public class MedicoService {
         return medicoOutputDTO;
     }
 
-    public ArrayList<MedicoOutputDTO> findAll() throws BancoDeDadosException {
-        ArrayList<Medico> listaMedico= medicoRepository.findAll();
-        ArrayList<MedicoOutputDTO> listaMedicoOutputDto = new ArrayList<>();
-
-        for (int i = 0; i< listaMedico.size(); i++){
-            listaMedicoOutputDto.add(objectMapper.convertValue(listaMedico.get(i), MedicoOutputDTO.class));
-        }
-
-        return listaMedicoOutputDto;
+    public List<MedicoOutputDTO> findAll() throws BancoDeDadosException {
+        return medicoRepository.findAll()
+                .stream()
+                .map(medico -> objectMapper.convertValue(medico, MedicoOutputDTO.class))
+                .toList();
     }
 
     public MedicoOutputDTO findById(Integer id) throws BancoDeDadosException, EntityNotFound {

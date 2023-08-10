@@ -113,8 +113,8 @@ public class PacienteRepository implements Repositorio<Integer, Paciente> {
                                         + "cep = ?, "
                                         + "data_nascimento = ?, "
                                         + "cpf = ?, "
-                                        + "salario_mensal = ? "
-                                        + "email = ?">>>>>>> develop
+                                        + "salario_mensal = ?, "
+                                        + "email = ?"
                                         + "WHERE id_pessoa = ?";
 
             PreparedStatement preparedStatement = conexao.prepareStatement(UPDATE_QUERY);

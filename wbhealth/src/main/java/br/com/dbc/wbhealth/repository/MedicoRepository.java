@@ -101,7 +101,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
         try {
             con = ConexaoBancoDeDados.getConnection();
             Statement st = con.createStatement();
-            Medico medico = new Medico();
+
             String sql = "SELECT * FROM MEDICO\n" +
                     "INNER JOIN PESSOA\n" +
                     "ON PESSOA.ID_PESSOA = MEDICO.ID_PESSOA";
@@ -109,6 +109,7 @@ public class MedicoRepository implements Repositorio<Integer, Medico> {
             ResultSet res = st.executeQuery(sql);
 
             while (res.next()){
+                Medico medico = new Medico();
                 medico.setIdPessoa(res.getInt("id_pessoa"));
                 medico.setNome(res.getString("nome"));
                 medico.setCep(res.getString("cep"));
