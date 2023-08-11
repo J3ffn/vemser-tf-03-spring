@@ -35,7 +35,7 @@ public class MedicoController implements MedicoControllerDoc {
         return ResponseEntity.status(HttpStatus.OK).body(medicoService.findAll());
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MedicoOutputDTO> findById(@PathVariable int id) {
         MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
@@ -53,7 +53,7 @@ public class MedicoController implements MedicoControllerDoc {
         return ResponseEntity.status(HttpStatus.OK).body(medicoService.save(medicoInputDTO));
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<MedicoOutputDTO> update(@PathVariable int id, @Valid @RequestBody MedicoInputDTO medicoInputDTO) {
         MedicoOutputDTO medicoOutputDTO = new MedicoOutputDTO();
         try {
@@ -66,7 +66,7 @@ public class MedicoController implements MedicoControllerDoc {
         return ResponseEntity.status(HttpStatus.OK).body(medicoOutputDTO);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public String deleteById(@PathVariable int id) throws EntityNotFound {
         return medicoService.deletarPeloId(id);
     }
